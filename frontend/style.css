@@ -1,0 +1,82 @@
+/* ---------- 1. COLOURS (change the whole look from here) ---------- */
+:root{
+  --ink:#16253b;        /* dark navy: text and header */
+  --paper:#f2f4f3;      /* page background */
+  --panel:#fff;         /* input boxes */
+  --signal:#f4b41a;     /* safety yellow: main buttons */
+  --signal-dk:#d99a06;  /* button on hover */
+  --ok:#1f7a5c;         /* green: success */
+  --bad:#b3261e;        /* red: errors */
+  --line:#d3d9d6;       /* thin borders */
+  --mute:#56657a;       /* softer grey text */
+}
+
+/* ---------- 2. BASICS ---------- */
+*{box-sizing:border-box}   /* padding no longer makes boxes wider than set */
+html{font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
+body{margin:0}
+
+/* ---------- 3. TOP BAR ---------- */
+header{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.75rem clamp(1rem,4vw,2.5rem);background:var(--ink)}
+header button{background:none;border:0;color:#fff;padding:.4rem .6rem;font-weight:500;cursor:pointer}
+header button:hover{color:var(--signal)}
+header .brand{font-weight:800;font-size:1.25rem;font-stretch:80%;padding-left:.9rem;border-left:.5rem solid var(--signal)}
+nav{display:flex;flex-wrap:wrap;gap:.25rem}
+
+/* ---------- 4. PAGE CONTENT AND TEXT ---------- */
+main{max-width:52rem;margin:0 auto;padding:2rem clamp(1rem,4vw,2rem) 4rem}
+h1{font-size:clamp(2.2rem,7vw,3.6rem);font-weight:800;font-stretch:75%;line-height:1.02;margin:.5rem 0 1.5rem;letter-spacing:-.01em}
+h2{font-size:1.2rem;margin:0 0 .5rem}
+
+/* ---------- 5. FORMS ---------- */
+label{display:block;font-weight:600;margin:1rem 0 .3rem}
+input,select,textarea{width:100%;font:inherit;padding:.65rem .75rem;border:2px solid var(--line);border-radius:.25rem;background:var(--panel);color:var(--ink)}
+textarea{font-size:1.15rem;resize:vertical}
+input[type=radio],input[type=checkbox]{width:auto;margin-right:.4rem}
+label.inline{display:inline-block;font-weight:500;margin:.25rem 1rem .25rem 0}
+fieldset{border:0;padding:0;margin:1rem 0 0}
+legend{font-weight:600;padding:0}
+:focus-visible{outline:3px solid var(--signal);outline-offset:2px}   /* visible when using the keyboard */
+input:focus,select:focus,textarea:focus{border-color:var(--ink)}
+
+/* ---------- 6. BUTTONS ---------- */
+button{font:inherit;font-weight:700;background:var(--signal);color:var(--ink);border:2px solid var(--signal);border-radius:.25rem;padding:.6rem 1.1rem;cursor:pointer}
+button:hover{background:var(--signal-dk);border-color:var(--signal-dk)}
+button.ghost{background:transparent;border-color:var(--ink)}
+button.ghost:hover{background:var(--ink);color:#fff}
+button.small{padding:.3rem .7rem;font-size:.9rem}
+
+/* ---------- 7. LAYOUT HELPERS ---------- */
+.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}        /* two columns side by side */
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:2.5rem}   /* login and sign-up side by side, stacked on phones */
+form button{margin-top:1.25rem}
+
+/* ---------- 8. MESSAGES ---------- */
+.msg{min-height:1.5rem;margin:1rem 0;font-weight:600}
+.msg.ok{color:var(--ok)}
+.msg.err{color:var(--bad)}
+
+/* ---------- 9. LISTS (fundi results, requests, users) ---------- */
+.item{display:grid;grid-template-columns:1fr auto;gap:.25rem 1.5rem;padding:1.1rem 0;border-top:2px solid var(--line)}
+.item h3{margin:0;font-size:1.2rem}
+.item p{margin:.2rem 0;color:var(--mute)}
+.score{text-align:right;min-width:6.5rem}
+.score b{font-size:1.8rem;font-stretch:80%;display:block;line-height:1}
+.bar{height:.4rem;background:var(--line);margin:.3rem 0 .75rem;border-radius:.2rem;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok)}
+.tag{display:inline-block;font-size:.85rem;font-weight:600;padding:.1rem .5rem;border:1.5px solid var(--line);border-radius:1rem;margin:.15rem .25rem .15rem 0}
+.tag.pending{border-color:var(--signal-dk)}
+.tag.accepted,.tag.completed{border-color:var(--ok);color:var(--ok)}
+.tag.declined{border-color:var(--bad);color:var(--bad)}
+.empty{padding:1.5rem 0;color:var(--mute);border-top:2px solid var(--line)}
+.inlineform{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.5rem}
+.inlineform select,.inlineform input{width:auto;flex:1 1 8rem}
+.checks{display:flex;flex-wrap:wrap}
+
+/* ---------- 10. PHONES (screens narrower than about 550px) ---------- */
+@media(max-width:34rem){
+  .row{grid-template-columns:1fr}
+  .item{grid-template-columns:1fr}
+  .score{text-align:left}
+}

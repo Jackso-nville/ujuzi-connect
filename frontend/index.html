@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- Makes the page fit phone screens instead of shrinking a desktop layout -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ujuzi Connect</title>
+
+  <!-- The font (Archivo) comes from Google Fonts; the CSS falls back to system fonts if offline -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,400..800&display=swap" rel="stylesheet">
+
+  <!-- Connects the look (style.css) to this page -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP BAR: brand on the left, navigation buttons on the right.
+       The buttons inside <nav> are filled in by app.js depending on who is logged in. -->
+  <header>
+    <button class="brand" data-go="find">Ujuzi Connect</button>
+    <nav id="nav" aria-label="Main"></nav>
+  </header>
+
+  <!-- MAIN AREA: three "screens" live here. Only one is visible at a time;
+       app.js shows or hides them. The "hidden" attribute hides a section. -->
+  <main>
+
+    <!-- SCREEN 1: find a fundi (the home page) -->
+    <section id="view-find">
+      <h1>Tell us what is broken.<br>We will find the fundi.</h1>
+
+      <label for="desc">Describe the job in your own words</label>
+      <textarea id="desc" rows="3" maxlength="1000" placeholder="Water is leaking under my kitchen sink"></textarea>
+
+      <div class="row">
+        <div>
+          <label for="cat">Service</label>
+          <select id="cat"><option value="">Any service</option></select>
+        </div>
+        <div>
+          <label for="loc">Your area</label>
+          <input id="loc" maxlength="80" placeholder="Nairobi">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="suggest" class="ghost">Suggest a service</button>
+        <button id="search">Show fundis</button>
+      </div>
+
+      <!-- Messages (errors, AI suggestion) appear here -->
+      <p id="aimsg" class="msg" role="status"></p>
+
+      <!-- The list of recommended fundis appears here -->
+      <div id="results"></div>
+    </section>
+
+    <!-- SCREEN 2: log in or create an account -->
+    <section id="view-auth" hidden>
+      <h1>Log in or create an account</h1>
+      <div class="two">
+
+        <form id="login" autocomplete="on">
+          <h2>Log in</h2>
+          <label for="le">Email</label>
+          <input id="le" type="email" required autocomplete="email">
+          <label for="lp">Password</label>
+          <input id="lp" type="password" required autocomplete="current-password">
+          <button>Log in</button>
+        </form>
+
+        <form id="register">
+          <h2>Create an account</h2>
+          <label for="rn">Name</label>
+          <input id="rn" required maxlength="80" autocomplete="name">
+          <label for="re">Email</label>
+          <input id="re" type="email" required autocomplete="email">
+          <label for="rp">Password (8 characters or more)</label>
+          <input id="rp" type="password" minlength="8" required autocomplete="new-password">
+          <fieldset>
+            <legend>I want to</legend>
+            <label class="inline"><input type="radio" name="role" value="client" checked> Find a fundi</label>
+            <label class="inline"><input type="radio" name="role" value="fundi"> Offer my services</label>
+          </fieldset>
+          <button>Create account</button>
+        </form>
+
+      </div>
+      <p id="authmsg" class="msg" role="status"></p>
+    </section>
+
+    <!-- SCREEN 3: dashboard (requests, profile, admin). app.js fills this in after login -->
+    <section id="view-dash" hidden></section>
+  </main>
+
+  <!-- The behaviour file. It goes last so the page above exists before the code runs. -->
+  <script src="app.js"></script>
+</body>
+</html>
