@@ -17,11 +17,19 @@ html{font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;color:v
 body{margin:0}
 
 /* ---------- 3. TOP BAR ---------- */
-header{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.75rem clamp(1rem,4vw,2.5rem);background:var(--ink)}
+header{position:relative;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.75rem clamp(1rem,4vw,2.5rem);background:var(--ink)}
 header button{background:none;border:0;color:#fff;padding:.4rem .6rem;font-weight:500;cursor:pointer}
 header button:hover{color:var(--signal)}
 header .brand{font-weight:800;font-size:1.25rem;font-stretch:80%;padding-left:.9rem;border-left:.5rem solid var(--signal)}
-nav{display:flex;flex-wrap:wrap;gap:.25rem}
+/* The hamburger menu: three lines on the right, links appear in a panel when clicked */
+.menu-btn{display:flex;flex-direction:column;gap:5px;padding:.6rem .5rem!important}
+.menu-btn span{display:block;width:26px;height:3px;background:#fff;border-radius:2px}
+.menu-btn:hover span{background:var(--signal)}
+#nav{position:absolute;right:clamp(1rem,4vw,2.5rem);top:100%;z-index:10;min-width:15rem;max-width:calc(100vw - 2rem);display:flex;flex-direction:column;background:var(--ink);border:2px solid var(--signal);border-top:0;border-radius:0 0 .5rem .5rem;padding:.5rem;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+#nav[hidden]{display:none}
+#nav button{width:100%;text-align:left;padding:.7rem .9rem;font-size:1rem}
+#nav .who{margin:0 0 .25rem;padding:.6rem .9rem;color:#fff;font-weight:700;border-bottom:1px solid rgba(255,255,255,.25)}
+#nav .who small{display:block;font-weight:400;color:#c9d3df}
 
 /* ---------- 4. PAGE CONTENT AND TEXT ---------- */
 main{max-width:52rem;margin:0 auto;padding:2rem clamp(1rem,4vw,2rem) 4rem}
@@ -73,6 +81,123 @@ form button{margin-top:1.25rem}
 .inlineform{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.5rem}
 .inlineform select,.inlineform input{width:auto;flex:1 1 8rem}
 .checks{display:flex;flex-wrap:wrap}
+
+/* ---------- 9b. LOG IN / CREATE ACCOUNT CARD ---------- */
+.auth-card{max-width:28rem;margin:1rem auto 0;background:var(--panel);border:2px solid var(--line);border-radius:.5rem;padding:2rem 1.75rem}
+.auth-card h1{font-size:clamp(1.8rem,5vw,2.3rem);margin:.25rem 0 1rem}
+.auth-card p{margin:.5rem 0}
+.block{width:100%}
+.step{color:var(--mute);font-weight:600;margin:0}
+.linkrow{text-align:right;margin:.6rem 0 0}
+.switch{text-align:center;color:var(--mute);margin-top:1.25rem}
+button.link{background:none;border:0;padding:0;margin:0;color:var(--ink);font-weight:700;text-decoration:underline;cursor:pointer;border-radius:0}
+button.link:hover{background:none;color:var(--ink);text-decoration:none}
+form button.link{margin-top:0}
+.choice{display:block;border:2px solid var(--line);border-radius:.4rem;padding:.9rem 1rem;margin:.75rem 0;cursor:pointer;font-weight:400;color:var(--mute)}
+.choice b{display:block;color:var(--ink)}
+.choice input{float:left;margin:.3rem .75rem 0 0}
+.choice:has(input:checked){border-color:var(--ink);background:#fff8e1}
+
+/* ---------- 9c. TOP MENU ON COMPUTERS ---------- */
+.topnav{display:none}
+@media (min-width:52rem){
+  .topnav{display:flex;flex:1;align-items:center;gap:.25rem;margin-left:1.5rem}
+  .topnav .right{margin-left:auto;display:flex;align-items:center;gap:.25rem}
+  .menu-btn,#nav{display:none!important}
+}
+.topnav button{background:none;border:0;color:#fff;padding:.6rem .8rem;font-weight:600;cursor:pointer}
+.topnav button:hover{color:var(--signal);background:none}
+.topnav .signup{background:var(--signal);color:var(--ink);border:2px solid var(--signal);border-radius:.25rem;padding:.4rem 1rem;margin-left:.5rem}
+.topnav .signup:hover{background:var(--signal-dk);color:var(--ink)}
+.dd{position:relative}
+.caret::after{content:"";display:inline-block;width:.45em;height:.45em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-left:.55em;position:relative;top:-.15em;transition:transform .15s}
+[aria-expanded=true]>.caret::after{transform:rotate(-135deg);top:.05em}
+.dd-panel{position:absolute;left:0;top:calc(100% + .4rem);z-index:20;min-width:16rem;display:flex;gap:2rem;background:var(--panel);color:var(--ink);border:2px solid var(--ink);border-top:4px solid var(--signal);border-radius:0 0 .5rem .5rem;padding:1rem 1.25rem;box-shadow:0 12px 28px rgba(0,0,0,.25)}
+.dd-panel[hidden]{display:none}
+.dd-panel.right{left:auto;right:0}
+.dd-col{min-width:11rem}
+.dd-col h4{margin:0 0 .4rem;font-size:.85rem;color:var(--mute);font-weight:700}
+.dd-col p{margin:0 0 .5rem}
+.dd-panel .hint{color:var(--mute);font-size:.9rem;max-width:15rem}
+.topnav .dd-panel .opt{display:block;width:100%;text-align:left;color:var(--ink);padding:.45rem .6rem;border-radius:.25rem;font-weight:500}
+.topnav .dd-panel .opt:hover{background:var(--paper);color:var(--ink)}
+.topnav .dd-panel .go{background:var(--signal);color:var(--ink);border:2px solid var(--signal);border-radius:.25rem;padding:.4rem .9rem;margin:.4rem 0 1rem}
+.topnav .dd-panel .go:hover{background:var(--signal-dk);color:var(--ink)}
+
+/* ---------- 9d. PHOTOS OF WORK AND THE POST A JOB BUTTON ---------- */
+.withthumb{display:flex;gap:1rem;align-items:flex-start}
+.thumb{width:6rem;height:6rem;object-fit:cover;border-radius:.4rem;flex:none;background:var(--line)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:1rem;margin:.5rem 0 1rem}
+.gallery figure{margin:0}
+.gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.4rem;display:block;background:var(--line)}
+.gallery figcaption{font-size:.9rem;color:var(--mute);margin-top:.3rem}
+.gallery figcaption b{color:var(--ink)}
+.topnav .postjob{border:2px solid #fff;border-radius:.25rem;padding:.4rem 1rem;margin-right:.5rem}
+.topnav .postjob:hover{border-color:var(--signal)}
+
+/* ---------- 9e. INFORMATION PAGES AND FOOTER ---------- */
+.lead{font-size:1.2rem;max-width:40rem;margin:0 0 1.5rem}
+h2.band{font-size:1.6rem;font-stretch:85%;margin:2.5rem 0 1rem;padding-top:1.25rem;border-top:2px solid var(--line)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:1.5rem}
+.card{border-top:4px solid var(--signal);padding-top:.75rem}
+.card h3{margin:0 0 .3rem;font-size:1.2rem}
+.card p{margin:0;color:var(--mute)}
+.steps{list-style:none;padding:0;margin:1.5rem 0 0;counter-reset:step}
+.steps li{counter-increment:step;position:relative;padding:1rem 0 1rem 3.5rem;border-top:2px solid var(--line)}
+.steps li::before{content:counter(step);position:absolute;left:0;top:1rem;width:2.4rem;height:2.4rem;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800}
+.steps h3{margin:0 0 .25rem;font-size:1.2rem}
+.steps p{margin:0;color:var(--mute);max-width:38rem}
+.safe{background:var(--panel);border:2px solid var(--line);border-radius:.5rem;padding:1.25rem 1.5rem}
+.safe ul{margin:0;padding-left:1.2rem}
+.safe li{margin:.6rem 0}
+footer{background:var(--ink);color:#d5dde8;padding:2.5rem clamp(1rem,4vw,2.5rem) 1.5rem;margin-top:2rem}
+.foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:2rem;max-width:62rem;margin:0 auto}
+.foot b{display:block;color:#fff;margin-bottom:.5rem}
+.foot p{margin:0}
+footer button{display:block;background:none;border:0;color:#d5dde8;padding:.25rem 0;font-weight:500;text-align:left;cursor:pointer}
+footer button:hover{color:var(--signal);background:none}
+.copy{max-width:62rem;margin:2rem auto 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.9rem}
+
+/* ---------- 9f. MESSAGES ---------- */
+.badge{display:inline-block;background:var(--signal);color:var(--ink);border-radius:1rem;padding:0 .5rem;font-size:.8rem;font-weight:800;margin-left:.4rem}
+.chatlog{height:min(28rem,55vh);overflow-y:auto;border:2px solid var(--line);border-radius:.5rem;background:var(--panel);padding:1rem;display:flex;flex-direction:column;gap:.6rem}
+.mrow{display:flex}
+.mrow.mine{justify-content:flex-end}
+.bubble{max-width:80%;padding:.55rem .8rem;border-radius:.8rem;background:var(--paper);white-space:pre-wrap;overflow-wrap:anywhere}
+.mrow.mine .bubble{background:var(--signal)}
+.bubble small{display:block;font-size:.75rem;color:var(--mute);margin-top:.2rem}
+.mrow.mine .bubble small{color:var(--ink);opacity:.7}
+.chatform{display:flex;gap:.6rem;margin-top:.75rem;align-items:flex-end}
+.chatform textarea{flex:1;font-size:1rem}
+form.chatform button{margin-top:0}
+.note{color:var(--mute);font-size:.9rem}
+
+/* ---------- 9g. ABOUT AND HOW IT WORKS ---------- */
+.jump{display:flex;flex-wrap:wrap;gap:.75rem;margin:0 0 1rem}
+.part{margin-top:3rem;padding-top:2rem;border-top:6px solid var(--ink)}
+.part>.tag{background:var(--signal);border-color:var(--signal);color:var(--ink);margin:0 0 .5rem}
+.part>h2{font-size:clamp(1.8rem,5vw,2.4rem);font-stretch:80%;margin:.25rem 0 .75rem}
+
+/* ---------- 9h. HELP ASSISTANT ---------- */
+.bot-btn{position:fixed;right:1.1rem;bottom:1.1rem;z-index:30;width:3.7rem;height:3.7rem;padding:0;border-radius:50%;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.35);color:var(--ink)}
+.bot-btn .dot{fill:var(--signal)}
+.bot-btn .ico-close{display:none}
+.bot-btn[aria-expanded=true] .ico-chat{display:none}
+.bot-btn[aria-expanded=true] .ico-close{display:block}
+.bot-btn::after{content:"Ask Ujuzi";position:absolute;right:calc(100% + .6rem);top:50%;transform:translateY(-50%);background:var(--ink);color:#fff;font-size:.9rem;font-weight:600;padding:.35rem .7rem;border-radius:.4rem;white-space:nowrap;opacity:0;pointer-events:none}
+.bot-btn:hover::after,.bot-btn:focus-visible::after{opacity:1}
+.bot-btn[aria-expanded=true]::after{display:none}
+.bot{position:fixed;right:1.1rem;bottom:5.7rem;z-index:31;width:min(24rem,calc(100vw - 2.2rem));height:min(33rem,calc(100vh - 7.5rem));display:flex;flex-direction:column;background:var(--panel);border:2px solid var(--ink);border-radius:.6rem;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.bot[hidden]{display:none}
+.bot-head{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;padding:.6rem .9rem;border-radius:.4rem .4rem 0 0}
+.bot-head button.link{color:#fff}
+.bot-log{flex:1;overflow-y:auto;padding:.8rem;display:flex;flex-direction:column;gap:.5rem}
+.bot-chips{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 .8rem .5rem}
+.chip{background:var(--paper);border:1.5px solid var(--line);color:var(--ink);font-weight:600;font-size:.85rem;padding:.25rem .65rem;border-radius:1rem}
+.chip:hover{background:var(--signal);border-color:var(--signal)}
+form.bot-form{display:flex;gap:.5rem;padding:.4rem .8rem}
+form.bot-form button{margin:0}
+.bot .note{margin:0;padding:0 .8rem .6rem}
 
 /* ---------- 10. PHONES (screens narrower than about 550px) ---------- */
 @media(max-width:34rem){

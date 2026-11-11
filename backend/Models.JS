@@ -12,6 +12,8 @@ const User = model('User', new Schema({
   role: { type: String, enum: ['client', 'fundi', 'admin'], default: 'client' },
   phone: { type: String, trim: true, maxlength: 20 },      // private until a client hires the fundi
   location: { type: String, trim: true, maxlength: 80 },   // client's area (shown on their profile)
+  resetTokenHash: String,                                  // password reset: only a scrambled copy of the token is stored
+  resetTokenExpires: Date,                                 // the reset link stops working after 30 minutes
 }, { timestamps: true }));
 
 // 2. SERVICE CATEGORIES: plumbing, electrical and so on
@@ -44,6 +46,8 @@ const JobRequest = model('JobRequest', new Schema({
   location: { type: String, trim: true, maxlength: 80 },
   status: { type: String, enum: ['open', 'assigned', 'completed', 'cancelled'], default: 'open', index: true },
   hiredFundiId: ref('User'),                               // set when the client accepts an offer
+  keywords: [String],                                      // problem terms from the AI suggestion, used for matching
+  invitedFundiIds: [ref('User')],                          // fundis the client invited after seeing the recommendations
 }, { timestamps: true }));
 
 // 5. OFFERS: a fundi's response to a posted job
@@ -67,4 +71,27 @@ const Review = model('Review', new Schema({
   comment: { type: String, maxlength: 500 },
 }, { timestamps: true }));
 
-module.exports = { User, ServiceCategory, FundiProfile, JobRequest, Offer, Review };
+// 7. PORTFOLIO: photos of a fundi's finished work. The photo itself is stored in the database.
+const portfolioSchema = new Schema({
+  fundiId: ref('User', { required: true }),
+  caption: { type: String, trim: true, maxlength: 120 },
+  priceAmount: { type: Number, min: 0, max: 1000000 },     // optional: what this piece of work cost, in KES
+  contentType: { type: String, enum: ['image/jpeg', 'image/png', 'image/webp'], required: true },
+  image: { type: Buffer, required: true },
+}, { timestamps: true });
+portfolioSchema.index({ fundiId: 1, createdAt: -1 });
+const PortfolioItem = model('PortfolioItem', portfolioSchema);
+
+// 8. MESSAGES: chat between a client and a fundi about one job. A conversation is one job plus one fundi.
+const messageSchema = new Schema({
+  jobId: ref('JobRequest', { required: true }),
+  fundiId: ref('User', { required: true }),                // which fundi the conversation is with
+  senderId: ref('User', { required: true }),
+  recipientId: ref('User', { required: true, index: true }),
+  text: { type: String, required: true, trim: true, maxlength: 1000 },
+  readAt: { type: Date, default: null },                   // empty until the recipient opens it
+}, { timestamps: true });
+messageSchema.index({ jobId: 1, fundiId: 1, createdAt: 1 });
+const Message = model('Message', messageSchema);
+
+module.exports = { User, ServiceCategory, FundiProfile, JobRequest, Offer, Review, PortfolioItem, Message };

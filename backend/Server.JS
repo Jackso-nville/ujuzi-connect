@@ -17,9 +17,14 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'change-me') {
 
 const app = express();
 app.use(helmet());
+// Photos arrive as text inside the request, so the photo route is allowed a bigger request than the rest
+app.use('/api/portfolio', express.json({ limit: '1.5mb' }));
 app.use(express.json({ limit: '20kb' }));          // lets the server read JSON sent by the browser
 app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, max: 50 }));
+app.use('/api/auth/forgot', rateLimit({ windowMs: 15 * 60 * 1000, max: 10 }));   // stops anyone flooding reset emails
 app.use('/api/ai', rateLimit({ windowMs: 60 * 1000, max: 15 }));
+app.use('/api/messages', rateLimit({ windowMs: 60 * 1000, max: 120 }));
+app.use('/api/assistant', rateLimit({ windowMs: 60 * 1000, max: 20 }));   // the assistant can use Gemini, so keep it limited   // chat refreshes often, but not endlessly
 
 // A simple check that the server and database are alive
 app.get('/api/health', (req, res) => {

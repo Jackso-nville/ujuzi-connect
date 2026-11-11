@@ -19,8 +19,18 @@
   <!-- TOP BAR: brand on the left, navigation buttons on the right.
        The buttons inside <nav> are filled in by app.js depending on who is logged in. -->
   <header>
-    <button class="brand" data-go="find">Ujuzi Connect</button>
-    <nav id="nav" aria-label="Main"></nav>
+<button class="brand" data-go="find" aria-label="Ujuzi Connect home">
+    <img src="logo.png" alt="Ujuzi Connect" class="brand-logo">
+    <span>Ujuzi Connect</span>
+</button>
+    <!-- Top menu on computers: Hire a fundi, Find a job, Log in, Sign up. app.js fills it in. -->
+    <nav id="topnav" class="topnav" aria-label="Main"></nav>
+
+    <!-- On phones the same links are inside the three-line menu -->
+    <button class="menu-btn" id="menubtn" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="nav" aria-label="Main" hidden></nav>
   </header>
 
   <!-- MAIN AREA: three "screens" live here. Only one is visible at a time;
@@ -45,9 +55,13 @@
         </div>
       </div>
 
+      <label for="skl">Skill (optional)</label>
+      <input id="skl" maxlength="40" placeholder="wiring, tiling, fridge repair">
+
       <div class="actions">
         <button id="suggest" class="ghost">Suggest a service</button>
         <button id="search">Show fundis</button>
+        <button class="ghost" data-act="postjob">Post a job</button>
       </div>
 
       <!-- Messages (errors, AI suggestion) appear here -->
@@ -57,38 +71,68 @@
       <div id="results"></div>
     </section>
 
-    <!-- SCREEN 2: log in or create an account -->
+    <!-- SCREEN 2: log in, create an account, forgot password. Only one form shows at a time. -->
     <section id="view-auth" hidden>
-      <h1>Log in or create an account</h1>
-      <div class="two">
+      <div class="auth-card">
 
+        <!-- LOG IN -->
         <form id="login" autocomplete="on">
-          <h2>Log in</h2>
+          <h1>Log in</h1>
           <label for="le">Email</label>
           <input id="le" type="email" required autocomplete="email">
           <label for="lp">Password</label>
           <input id="lp" type="password" required autocomplete="current-password">
-          <button>Log in</button>
+          <p class="linkrow"><button type="button" class="link" data-auth="forgot">Forgot password?</button></p>
+          <button class="block">Log in</button>
+          <p class="switch">New to Ujuzi Connect? <button type="button" class="link" data-auth="register">Create an account</button></p>
         </form>
 
-        <form id="register">
-          <h2>Create an account</h2>
-          <label for="rn">Name</label>
-          <input id="rn" required maxlength="80" autocomplete="name">
-          <label for="re">Email</label>
-          <input id="re" type="email" required autocomplete="email">
-          <label for="rp">Password (8 characters or more)</label>
-          <input id="rp" type="password" minlength="8" required autocomplete="new-password">
-          <fieldset>
-            <legend>I want to</legend>
-            <label class="inline"><input type="radio" name="role" value="client" checked> Find a fundi</label>
-            <label class="inline"><input type="radio" name="role" value="fundi"> Offer my services</label>
-          </fieldset>
-          <button>Create account</button>
+        <!-- CREATE ACCOUNT, in two steps -->
+        <form id="register" hidden>
+          <div id="reg1">
+            <p class="step">Step 1 of 2</p>
+            <h1>How will you use Ujuzi Connect?</h1>
+            <label class="choice"><input type="radio" name="role" value="client" checked><b>I need work done</b>Post jobs and choose from fundis.</label>
+            <label class="choice"><input type="radio" name="role" value="fundi"><b>I offer my skills</b>Build a profile and respond to jobs.</label>
+            <button type="button" class="block" data-act="regnext">Continue</button>
+          </div>
+          <div id="reg2" hidden>
+            <p class="step">Step 2 of 2</p>
+            <h1>Create your account</h1>
+            <label for="rn">Name</label>
+            <input id="rn" required maxlength="80" autocomplete="name">
+            <label for="re">Email</label>
+            <input id="re" type="email" required autocomplete="email">
+            <label for="rp">Password (8 characters or more)</label>
+            <input id="rp" type="password" minlength="8" required autocomplete="new-password">
+            <button class="block">Create account</button>
+            <p class="switch"><button type="button" class="link" data-act="regback">Back</button></p>
+          </div>
+          <p class="switch">Already have an account? <button type="button" class="link" data-auth="login">Log in</button></p>
         </form>
 
+        <!-- FORGOT PASSWORD -->
+        <form id="forgot" hidden>
+          <h1>Reset your password</h1>
+          <p>Enter the email you signed up with. We will send you a link to choose a new password.</p>
+          <label for="fe">Email</label>
+          <input id="fe" type="email" required autocomplete="email">
+          <button class="block">Send reset link</button>
+          <p class="switch"><button type="button" class="link" data-auth="login">Back to log in</button></p>
+        </form>
+
+        <!-- NEW PASSWORD (opens from the link in the email) -->
+        <form id="reset" hidden>
+          <h1>Choose a new password</h1>
+          <label for="np">New password (8 characters or more)</label>
+          <input id="np" type="password" minlength="8" required autocomplete="new-password">
+          <label for="np2">Repeat the new password</label>
+          <input id="np2" type="password" minlength="8" required autocomplete="new-password">
+          <button class="block">Save new password</button>
+        </form>
+
+        <p id="authmsg" class="msg" role="status"></p>
       </div>
-      <p id="authmsg" class="msg" role="status"></p>
     </section>
 
     <!-- SCREEN 3: dashboard (requests, profile, admin). app.js fills this in after login -->
@@ -96,9 +140,150 @@
 
     <!-- SCREEN 4: one fundi's public profile page -->
     <section id="view-profile" hidden></section>
+
+    <!-- SCREEN 7: messages (inbox and one conversation) -->
+    <section id="view-messages" hidden></section>
+
+    <!-- SCREEN 5: About us. Fundis finding jobs comes first. -->
+    <section id="view-about" hidden>
+      <h1>About Ujuzi Connect</h1>
+      <p class="lead">Ujuzi means skill in Swahili. Ujuzi Connect exists so that skilled fundis can find jobs, and so that people who need work done can find the right fundi.</p>
+      <div class="jump">
+        <button data-act="signupfundi">Find jobs as a fundi</button>
+        <button class="ghost" data-act="postjob">Post a job</button>
+        <button class="ghost" data-go="how">See how it works</button>
+      </div>
+
+      <h2 class="band">For fundis: finding jobs</h2>
+      <p>Skilled fundis across Kenya often depend on referrals and word of mouth, and have no easy way to show what they can do. Ujuzi Connect gives every fundi a profile with their services, skills, prices, photos of past work and reviews. A job board shows open jobs for their services, and clients are shown fundis ranked by how well they match.</p>
+      <div class="cards">
+        <div class="card"><h3>Jobs that fit your skills</h3><p>The job board shows open jobs for the services on your profile, and you can filter by service or area.</p></div>
+        <div class="card"><h3>Show your work</h3><p>Add photos of finished jobs and set your own price, per job, per hour or per day.</p></div>
+        <div class="card"><h3>Rise with good reviews</h3><p>Fundis are ranked by service, skills, area, availability and reviews, so good work is rewarded.</p></div>
+      </div>
+
+      <h2 class="band">For clients: finding a fundi</h2>
+      <p>People who need work done often rely on friends, relatives or luck, and find it hard to compare prices or see past work. Ujuzi Connect lets a client describe a job in their own words, then see recommended fundis with their prices, photos and reviews, and choose the one they trust.</p>
+      <div class="cards">
+        <div class="card"><h3>Describe it your way</h3><p>Write the job in your own words. Our assistant suggests the right service, and you can always change it.</p></div>
+        <div class="card"><h3>Recommendations you can explain</h3><p>Every recommended fundi shows the reasons for the match, so you know why they were suggested.</p></div>
+        <div class="card"><h3>Compare before you choose</h3><p>Prices, photos of past work and reviews are shown up front.</p></div>
+      </div>
+
+      <h2 class="band">Privacy</h2>
+      <p>Phone numbers stay hidden until a client accepts a fundi's offer, and email addresses are never shown to other users.</p>
+
+      <h2 class="band">What we do not do</h2>
+      <div class="safe">
+        <ul>
+          <li><b>We do not handle payments.</b> A client and a fundi agree the payment and settle it directly.</li>
+          <li><b>We do not check qualifications.</b> Fundis write their own profiles, so read reviews and look at photos of past work before you choose.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: How it works. Clients and fundis on one page. -->
+    <section id="view-how" hidden>
+      <h1>How Ujuzi Connect works</h1>
+      <p class="lead">Whether you need work done or you are a fundi looking for jobs, here is how to get started.</p>
+      <div class="jump" id="audience-tabs">
+        <button data-act="audience" data-who="clients">I need work done</button>
+        <button class="ghost" data-act="audience" data-who="fundis">I am a fundi</button>
+      </div>
+
+      <!-- FOR CLIENTS -->
+      <div id="for-clients" class="part">
+        <span class="tag">For clients</span>
+        <h2>How can Ujuzi Connect help you?</h2>
+        <p class="lead">The possibilities are endless. Ujuzi Connect brings you skilled fundis for repairs, building, painting, plumbing, electrical work and much more. See their prices, photos of past work and reviews, then choose the fundi you trust.</p>
+        <button data-act="postjob">Post a job</button>
+
+        <h2 class="band">How to hire a fundi</h2>
+        <div class="cards">
+          <div class="card"><h3>Any size of job</h3><p>From fixing a socket to building a wardrobe, describe the work and get it done.</p></div>
+          <div class="card"><h3>Flexible pricing</h3><p>Fundis set their own price per job, per hour or per day. Compare before you choose, then agree how and when to pay directly with your fundi.</p></div>
+          <div class="card"><h3>Diverse talent</h3><p>Plumbers, electricians, carpenters, masons, painters, welders and appliance repairers, all in one place.</p></div>
+        </div>
+
+        <h2 class="band">How does it work?</h2>
+        <ol class="steps">
+          <li><h3>Post a job</h3><p>Describe what you need in your own words. Our assistant can suggest the right service for you.</p></li>
+          <li><h3>Choose a fundi</h3><p>We recommend fundis who match your job. Compare their prices, photos of past work and reviews, invite the ones you like, and accept the offer that suits you.</p></li>
+          <li><h3>Pay when you are satisfied</h3><p>Agree the payment with your fundi and pay them directly once the job is done to your satisfaction. Ujuzi Connect does not handle money.</p></li>
+        </ol>
+
+        <h2 class="band">Keep in contact</h2>
+        <p>Message any fundi who sends you an offer, to ask questions or agree the details. Once you accept an offer, you and your fundi also see each other's phone number. When the job is done, leave a review to help the next client.</p>
+      </div>
+
+      <!-- FOR FUNDIS -->
+      <div id="for-fundis" class="part" hidden>
+        <span class="tag">For fundis</span>
+        <h2>How do I get started?</h2>
+        <p class="lead">Turn your skill into steady work. Set up your profile once, and clients looking for your service can find you.</p>
+        <button data-act="signupfundi">Create a fundi account</button>
+
+        <ol class="steps">
+          <li><h3>Complete your profile</h3><p>Choose the services you offer, list your skills, and add your area, years of experience and your price. A complete profile ranks better, because the ranking uses your skills, area and availability.</p></li>
+          <li><h3>Browse jobs that suit you</h3><p>The job board shows open jobs for your services. Filter by service or area, and look out for the "invited you" tag, which means a client picked you.</p></li>
+          <li><h3>Write your best description</h3><p>Add a short message to each offer, and put photos of your best work on your profile. Say what you will do, and how soon you can start.</p></li>
+          <li><h3>Get ranked and earn</h3><p>Clients see fundis ranked by service, skills, area, availability and reviews. Do good work, collect good reviews and move up the ranking.</p></li>
+        </ol>
+
+        <h2 class="band">Manage your job</h2>
+        <p>Clients can message you once you send an offer, and you can message them too. When a client accepts your offer, you see their phone number. Agree the day, the details and how you will be paid, do the work, then mark the job completed. The client can then review your work, and the review appears on your profile.</p>
+      </div>
+
+      <!-- FOR EVERYONE -->
+      <h2 class="band" id="safety">Safe and secure</h2>
+      <div class="safe">
+        <ul>
+          <li><b>Phone numbers stay private.</b> A client and a fundi see each other's number only after the client accepts an offer. Email addresses are never shown to other users.</li>
+          <li><b>Passwords are protected.</b> They are stored in scrambled form, never as readable text, and password reset links work only once.</li>
+          <li><b>Reviews are real.</b> Only the client of a completed job can review the fundi who did it.</li>
+          <li><b>Check before you choose.</b> Read reviews and look at photos of past work. Ujuzi Connect does not check fundis' qualifications for you, so ask questions before you decide.</li>
+          <li><b>Agree before work starts.</b> Settle the price and what is included first. Clients pay only when satisfied, and fundis are paid directly. Ujuzi Connect does not handle payments.</li>
+          <li><b>Only the right fundis see your job.</b> A job is shown to fundis who offer that service.</li>
+          <li><b>About the assistant.</b> When you use "Suggest a service", the text of your job description is sent to Google's Gemini service to find the right category. Your name and contact details are not sent.</li>
+        </ul>
+      </div>
+    </section>
   </main>
 
+  <footer>
+    <div class="foot">
+      <div><b>Ujuzi Connect</b><p>Skilled fundis, found fast.</p></div>
+      <div><b>About</b>
+        <button data-go="about">About us</button>
+        <button data-go="how">How it works</button>
+        <button data-go="how" data-scroll="safety">Safe and secure</button></div>
+    </div>
+    <p class="copy">&copy; 2026 Ujuzi Connect</p>
+  </footer>
+
+
   <!-- The behaviour file. It goes last so the page above exists before the code runs. -->
+  <!-- The help assistant: a button in the corner that opens a small chat -->
+  <button id="botbtn" class="bot-btn" aria-label="Ask Ujuzi: open the assistant" aria-expanded="false" aria-controls="bot">
+    <svg class="ico-chat" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+      <path d="M12 3C6.5 3 2 6.9 2 11.7c0 2.6 1.3 4.9 3.4 6.5L4.5 21.5l3.9-2c1.1.3 2.3.5 3.6.5 5.5 0 10-3.9 10-8.8S17.500 3 12 3z" fill="currentColor"/>
+      <circle class="dot" cx="7.800" cy="11.700" r="1.300"/><circle class="dot" cx="12" cy="11.700" r="1.300"/><circle class="dot" cx="16.200" cy="11.700" r="1.300"/>
+    </svg>
+    <svg class="ico-close" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.800" stroke-linecap="round" fill="none"/>
+    </svg>
+  </button>
+  <aside id="bot" class="bot" hidden aria-label="Ujuzi assistant">
+    <div class="bot-head"><b>Ujuzi assistant</b><button class="link" id="botclose" aria-label="Close the assistant">Close</button></div>
+    <div id="botlog" class="bot-log" aria-live="polite"></div>
+    <div id="botchips" class="bot-chips"></div>
+    <form id="botform" class="bot-form">
+      <input id="botin" maxlength="300" placeholder="Ask a question" aria-label="Your question" autocomplete="off" required>
+      <button>Send</button>
+    </form>
+    <p class="note">I answer questions about using Ujuzi Connect and can make mistakes. Never share your password.</p>
+  </aside>
+
   <script src="app.js"></script>
 </body>
 </html>

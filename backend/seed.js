@@ -4,7 +4,7 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const { User, ServiceCategory, FundiProfile } = require('./models');
+const { User, ServiceCategory, FundiProfile } = require('./models.js');
 
 const CATEGORIES = ['Plumbing', 'Electrical installation', 'Carpentry', 'Masonry', 'Painting', 'Welding', 'Appliance repair'];
 const DEMO = [
@@ -18,11 +18,22 @@ async function seed() {
     await ServiceCategory.updateOne({ name }, { $setOnInsert: { name, active: true } }, { upsert: true });
   }
 
+  // Create the administrator account from the settings in .env (only once).
+  // The server says in the terminal what it did, so a missing account is easy to explain.
   const email = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
   const password = process.env.ADMIN_PASSWORD || '';
-  if (email && password.length >= 8 && !(await User.exists({ email }))) {
-    await User.create({ name: 'Administrator', email, role: 'admin', passwordHash: await bcrypt.hash(password, 12) });
-    console.log('Administrator account created for ' + email);
+  if (!email || !password) {
+    console.log('Administrator NOT created: ADMIN_EMAIL or ADMIN_PASSWORD is missing in backend/.env');
+  } else if (password.length < 8) {
+    console.log('Administrator NOT created: ADMIN_PASSWORD must have at least 8 characters');
+  } else {
+    const existing = await User.findOne({ email }, 'role').lean();
+    if (existing) {
+      console.log(`Administrator NOT created: an account with ${email} already exists (role: ${existing.role})`);
+    } else {
+      await User.create({ name: 'Administrator', email, role: 'admin', passwordHash: await bcrypt.hash(password, 12) });
+      console.log('Administrator account created for ' + email);
+    }
   }
 
   if (process.env.SEED_DEMO === 'true') {
