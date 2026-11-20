@@ -240,7 +240,7 @@ Potential areas for further development include:
 
 **Rodher Jackson**  
 Bachelor of Business Information Technology (BBIT)  
-GitHub: [Your GitHub Profile](YOUR_GITHUB_PROFILE_URL)
+GitHub:https://github.com/Jackso-nville
 
 ## Project Status
 

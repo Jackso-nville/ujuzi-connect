@@ -283,8 +283,16 @@
             <input id="rn" required maxlength="80" autocomplete="name">
             <label for="re">Email</label>
             <input id="re" type="email" required autocomplete="email">
-            <label for="rp">Password (8 characters or more)</label>
-            <input id="rp" type="password" minlength="8" required autocomplete="new-password">
+      <label for="rp">Password</label>
+<input id="rp" type="password" minlength="8" required autocomplete="new-password">
+
+<div id="passwordRequirements" class="password-requirements" aria-live="polite">
+  <p data-password-rule="length">○ At least 8 characters</p>
+  <p data-password-rule="uppercase">○ One uppercase letter (A–Z)</p>
+  <p data-password-rule="lowercase">○ One lowercase letter (a–z)</p>
+  <p data-password-rule="number">○ One number (0–9)</p>
+  <p data-password-rule="special">○ One special character (!@#$%)</p>
+</div>
             <button class="block">Create account</button>
             <p class="switch"><button type="button" class="link" data-act="regback">Back</button></p>
           </div>

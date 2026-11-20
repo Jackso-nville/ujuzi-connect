@@ -50,6 +50,26 @@ legend{font-weight:600;padding:0}
 :focus-visible{outline:3px solid var(--signal);outline-offset:2px}   /* visible when using the keyboard */
 input:focus,select:focus,textarea:focus{border-color:var(--ink)}
 
+/* Password strength requirements */
+.password-requirements {
+  margin: .6rem 0 1rem;
+  padding: .65rem .8rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: .35rem;
+}
+
+.password-requirements p {
+  margin: .3rem 0;
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.password-requirements p.valid {
+  color: #218838;
+  font-weight: 600;
+}
+
 /* ---------- 6. BUTTONS ---------- */
 button{font:inherit;font-weight:700;background:var(--signal);color:var(--ink);border:2px solid var(--signal);border-radius:.25rem;padding:.6rem 1.1rem;cursor:pointer}
 button:hover{background:var(--signal-dk);border-color:var(--signal-dk)}

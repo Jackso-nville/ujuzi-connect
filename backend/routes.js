@@ -19,6 +19,13 @@ const isId = (v) => typeof v === 'string' && mongoose.isValidObjectId(v);       
 const bad = (res, msg, code = 400) => res.status(code).json({ error: msg });
 const phoneOk = (p) => /^[0-9+\-\s()]{7,20}$/.test(p);                               // a plausible phone number
 
+// Enforces strong passwords for new and existing accounts
+const passwordOk = (password) =>
+  password.length >= 8 &&
+  /[A-Z]/.test(password) &&
+  /[a-z]/.test(password) &&
+  /[0-9]/.test(password) &&
+  /[^A-Za-z0-9\s]/.test(password);
 // Checks the login token and the user's role. The server enforces roles; hiding a button is never enough.
 const auth = (...roles) => (req, res, next) => {
   try { req.user = jwt.verify((req.headers.authorization || '').replace('Bearer ', ''), process.env.JWT_SECRET); }
@@ -40,7 +47,9 @@ router.post('/auth/register', wrap(async (req, res) => {
   const role = req.body.role === 'fundi' ? 'fundi' : 'client';
   if (!name) return bad(res, 'Enter your name.');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return bad(res, 'Enter a valid email address.');
-  if (password.length < 8) return bad(res, 'Use a password with at least 8 characters.');
+if (!passwordOk(password)) {
+  return bad(res, 'Password must have at least 8 characters, an uppercase letter, a lowercase letter, a number and a special character.');
+}
   try {
     const user = await User.create({ name, email, role, passwordHash: await bcrypt.hash(password, 12) });
     if (role === 'fundi') await FundiProfile.create({ userId: user._id });   // every fundi starts with an empty profile
@@ -74,21 +83,31 @@ router.post('/auth/forgot', wrap(async (req, res) => {
   res.json({ message: 'If an account exists for that email, a reset link has been sent. The link works for 30 minutes.' });
 }));
 
-// ---------- Choose a new password with the link ----------
+
+ // ---------- Choose a new password with the link ----------
 router.post('/auth/reset', wrap(async (req, res) => {
   const token = str(req.body.token, 100);
   const password = str(req.body.password, 100);
+
   if (!token) return bad(res, 'This reset link is invalid or has expired. Please request a new one.');
-  if (password.length < 8) return bad(res, 'Use a password with at least 8 characters.');
+
+  if (!passwordOk(password)) {
+    return bad(res, 'Password must have at least 8 characters, an uppercase letter, a lowercase letter, a number and a special character.');
+  }
+
   const hash = crypto.createHash('sha256').update(token).digest('hex');
   const user = await User.findOne({ resetTokenHash: hash, resetTokenExpires: { $gt: new Date() } });
+
   if (!user) return bad(res, 'This reset link is invalid or has expired. Please request a new one.');
+
   user.passwordHash = await bcrypt.hash(password, 12);
-  user.resetTokenHash = undefined;       // a link can be used only once
+  user.resetTokenHash = undefined;
   user.resetTokenExpires = undefined;
   await user.save();
+
   res.json({ ok: true });
 }));
+
 
 router.get('/categories', wrap(async (req, res) => {
   const cats = await ServiceCategory.find({ active: true }).sort('name').lean();

@@ -851,8 +851,47 @@ function setRegStep(n) {
   $('#reg2').hidden = n !== 2;
 }
 
+// Checks whether a password meets all security requirements
+function checkPasswordStrength(password) {
+  return {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[^A-Za-z0-9\s]/.test(password),
+  };
+}
+
+// Updates the password checklist while the user types
+$('#rp').addEventListener('input', () => {
+  const password = $('#rp').value;
+  const rules = checkPasswordStrength(password);
+
+  Object.entries(rules).forEach(([rule, passed]) => {
+    const item = document.querySelector(`[data-password-rule="${rule}"]`);
+
+    if (!item) return;
+
+    item.classList.toggle('valid', passed);
+    item.textContent = `${passed ? '✓' : '○'} ${{
+      length: 'At least 8 characters',
+      uppercase: 'One uppercase letter (A–Z)',
+      lowercase: 'One lowercase letter (a–z)',
+      number: 'One number (0–9)',
+      special: 'One special character (!@#$%)',
+    }[rule]}`;
+  });
+});
+
 $('#register').onsubmit = async (e) => {
   e.preventDefault();                                   // stops the page from reloading
+    const password = $('#rp').value;
+  const rules = checkPasswordStrength(password);
+
+  if (!Object.values(rules).every(Boolean)) {
+    showMessage($('#authmsg'), 'Please meet all five password requirements.', false);
+    return;
+  }
   try {
     const data = await api('/auth/register', {
       method: 'POST',
