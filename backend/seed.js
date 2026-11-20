@@ -6,7 +6,16 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const { User, ServiceCategory, FundiProfile } = require('./models.js');
 
-const CATEGORIES = ['Plumbing', 'Electrical installation', 'Carpentry', 'Masonry', 'Painting', 'Welding', 'Appliance repair'];
+const CATEGORIES = [
+  'Plumbing',
+  'Electrical installation',
+  'Carpentry',
+  'Masonry',
+  'Painting',
+  'Welding',
+  'Appliance repair',
+  'Tailoring'
+];
 const DEMO = [
   { name: 'Peter Otieno', email: 'peter@demo.test', cats: ['Plumbing'], skills: ['pipe repair', 'leak detection', 'drain unblocking'], location: 'Nairobi', years: 8, availability: 'available', rate: { amount: 1500, unit: 'per job' }, about: 'Plumber with eight years of experience in homes and small businesses.' },
   { name: 'Grace Wanjiru', email: 'grace@demo.test', cats: ['Electrical installation', 'Appliance repair'], skills: ['wiring', 'socket repair', 'fridge repair'], location: 'Nairobi', years: 5, availability: 'available', rate: { amount: 800, unit: 'per hour' }, about: 'Electrician who also repairs fridges and cookers.' },

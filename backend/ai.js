@@ -97,8 +97,7 @@ async function recommend({ categoryId, fundiIds, location = '', keywords = [], d
   // Only the given fundis, or those who offer the chosen service, or everyone if no service is chosen
   const query = fundiIds ? { userId: { $in: fundiIds } } : categoryId ? { serviceCategories: categoryId } : {};
   const profiles = await FundiProfile.find(query)
-    .populate('userId', 'name').populate('serviceCategories', 'name').lean();
-  // A skill filter keeps only fundis who list that skill, for example "wiring"
+.populate('userId', 'name hasPhoto').populate('serviceCategories', 'name').lean();  // A skill filter keeps only fundis who list that skill, for example "wiring"
   const needle = String(skill).trim().toLowerCase();
   const live = profiles.filter((p) => p.userId && (!needle || (p.skills || []).some((s) => String(s).toLowerCase().includes(needle))));
 
@@ -153,8 +152,11 @@ async function recommend({ categoryId, fundiIds, location = '', keywords = [], d
     if (n) reasons.push(`Rated ${st.avg.toFixed(1)} from ${n} review${n > 1 ? 's' : ''}`);
 
     return {
-      fundiId: p.userId._id, name: p.userId.name, location: p.location || '', skills: p.skills || [],
-      services: (p.serviceCategories || []).map((c) => c.name), availability: p.availability,
+fundiId: p.userId._id,
+name: p.userId.name,
+hasPhoto: !!p.userId.hasPhoto,
+location: p.location || '',
+skills: p.skills || [],      services: (p.serviceCategories || []).map((c) => c.name), availability: p.availability,
       experienceYears: p.experienceYears, description: p.description || '', rate: p.rate || null,
       rating: n ? Number(st.avg.toFixed(1)) : null, reviewCount: n, score: Math.round(score), reasons,
       cover: coverOf[String(p.userId._id)] ? coverOf[String(p.userId._id)].cover : null,

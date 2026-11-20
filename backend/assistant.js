@@ -6,6 +6,7 @@
 
 // strong words score 2, weak words score 1. A leading space means "a word that starts with this".
 // An answer is used when its score reaches 2.
+const { liveAnswer } = require('./live');
 const FAQ = [
   { id: 'hello', strong: [' hello', ' hi ', ' hey ', 'good morning', 'good afternoon', 'good evening'], weak: [],
     answer: 'Hello! I can answer questions about using Ujuzi Connect: posting jobs, finding jobs as a fundi, prices, messages, reviews and privacy. What would you like to know?' },
@@ -67,20 +68,75 @@ const NONE = {
   action: { label: 'How it works', go: 'how' },
 };
 
-const clean = (t) => ' ' + String(t || '').toLowerCase().replace(/[^a-z0-9' -]+/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+
+// Convert different words and phrases into common terms.
+// This helps the assistant understand different ways of asking the same question.
+const SYNONYMS = [
+  [/\b(bricklayers?|brick masons?)\b/g, ' masonry '],
+  [/\b(masons?)\b/g, ' masonry '],
+  [/\b(plumbers?|pipe fitters?)\b/g, ' plumbing '],
+  [/\b(electricians?|electrical technicians?)\b/g, ' electrical '],
+  [/\b(carpenters?|woodworkers?)\b/g, ' carpentry '],
+  [/\b(painters?|decorators?)\b/g, ' painting '],
+  [/\b(welders?)\b/g, ' welding '],
+  [/\b(repairmen|repair technicians|appliance technicians)\b/g, ' appliance repair '],
+
+  [/\b(occupied|not free|not available|unavailable)\b/g, ' busy '],
+  [/\b(free|ready to work|available now)\b/g, ' available '],
+
+  [/\b(employ|employing|looking to employ)\b/g, ' hire '],
+  [/\b(find someone|look for someone|search for someone)\b/g, ' find a fundi '],
+  [/\b(workers|artisans|technicians|service providers)\b/g, ' fundis '],
+
+  [/\b(charges|costs|expenses|rates)\b/g, ' price '],
+  [/\b(get in touch|speak with|talk with)\b/g, ' contact '],
+  [/\b(signing up|join|joining)\b/g, ' register '],
+  [/\b(log in|logging in|sign in)\b/g, ' login '],
+  [/\b(opinions|testimonials|customer feedback)\b/g, ' reviews ']
+];
+
+const clean = (t) => {
+  let message = String(t || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9' -]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  for (const [pattern, replacement] of SYNONYMS) {
+    message = message.replace(pattern, replacement);
+  }
+
+  return ' ' + message.replace(/\s+/g, ' ').trim() + ' ';
+};
 
 // Finds the ready-made answer that fits the question best (or nothing)
+
 function findFaq(message) {
   const m = clean(message);
-  let best = null, bestScore = 0;
+  let best = null;
+  let bestScore = 0;
+
   for (const f of FAQ) {
     let score = 0;
-    for (const k of f.strong) if (m.includes(k)) score += 2;
-    for (const k of f.weak) if (m.includes(k)) score += 1;
-    if (score > bestScore) { best = f; bestScore = score; }
+
+    for (const k of f.strong) {
+      if (m.includes(k)) score += 2;
+    }
+
+    for (const k of f.weak) {
+      if (m.includes(k)) score += 1;
+    }
+
+    // Give a small preference to an answer with more matching keywords.
+    if (score > bestScore) {
+      best = f;
+      bestScore = score;
+    }
   }
+
   return bestScore >= 2 ? best : null;
 }
+
 
 // Gemini may only use the facts in the ready-made answers
 const SYSTEM = 'You are the help assistant for Ujuzi Connect, a Kenyan web platform where skilled fundis find jobs and clients find fundis. '
@@ -116,7 +172,13 @@ async function askGemini(model, key, message) {
   return text.slice(0, 700);
 }
 
-async function answer(message) {
+async function answer(message, user) {
+  // First check live database information.
+  const live = await liveAnswer(message, user);
+
+  if (live) return live;
+
+  // If no live database answer applies, check the FAQs.
   const faq = findFaq(message);
   if (faq) return { source: 'faq', answer: faq.answer, action: faq.action || null };
 

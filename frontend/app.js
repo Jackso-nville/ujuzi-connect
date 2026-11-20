@@ -1,5 +1,5 @@
 // Ujuzi Connect: the browser code.
-// Stage 14 adds: the help assistant.
+// Stage 16 adds: clickable service cards on the home page, and safer handling of the footer network.
 
 // ---------- Small helpers ----------
 const $ = (selector) => document.querySelector(selector);
@@ -97,7 +97,8 @@ function renderNav() {
   const messagesButton = u && u.role !== 'admin' ? `<button data-act="inbox">Messages${badge}</button>` : '';
   const postJobButton = '<button class="postjob" data-act="postjob">Post a job</button>';
   const right = u
-    ? (u.role === 'client' ? postJobButton : '') + messagesButton + `<button data-go="dash">${label}</button>` + dropdown('user', esc(u.name),
+    ? (u.role === 'client' ? postJobButton : '') + messagesButton + `<button data-go="dash">${label}</button>` + dropdown('user',
+        `${avatar(u.id, u.name, u.hasPhoto, 'nav-avatar')} <span>${esc(u.name)}</span>`,
         `<div class="dd-col"><p><b>${esc(u.name)}</b><br><small>${esc(u.role)}</small></p><button class="opt" data-act="logout">Log out</button></div>`, true)
     : postJobButton + '<button data-act="auth" data-mode="login">Log in</button><button class="signup" data-act="auth" data-mode="register">Sign up</button>';
   $('#topnav').innerHTML = left + `<div class="right">${right}</div>`;
@@ -145,7 +146,7 @@ async function dropdownAction(act, id) {
   if (act === 'hirecat') { $('#cat').value = id; $('#skl').value = ''; }
   if (act === 'hireloc') $('#loc').value = $('#dd-loc').value;
   if (act === 'hireskill') $('#skl').value = $('#dd-skill').value;
-  show('find');
+show('search');
   await runSearch();
   if ($('#results').scrollIntoView) $('#results').scrollIntoView({ behavior: 'smooth' });
 }
@@ -158,6 +159,9 @@ function setMenu(open) {
 }
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { setMenu(false); closeDd(); openBot(false); }
+  // Cards that act like buttons (the service cards) also work with Enter and the space bar
+  const t = e.target;
+  if ((e.key === 'Enter' || e.key === ' ') && t && t.getAttribute && t.getAttribute('role') === 'button' && t.dataset.act) { e.preventDefault(); t.click(); }
   // Pressing Enter in a dropdown box searches, like pressing its Search button
   if (e.key === 'Enter' && e.target && e.target.dataset && e.target.dataset.enter) dropdownAction(e.target.dataset.enter).catch((err) => showMessage(visibleMessage(), err.message, false));
 });
@@ -180,7 +184,10 @@ const thumb = (f) => (f.cover ? `<img class="thumb" src="/api/portfolio/${esc(f.
 const fundiRow = (f) => `<div class="item">
   <div class="withthumb">${thumb(f)}
     <div>
-      <h3>${esc(f.name)}</h3>
+      <div class="fundi-heading">
+        ${avatar(f.userId || f.fundiId, f.name, f.hasPhoto, 'fundi-avatar')}
+        <h3>${esc(f.name)}</h3>
+      </div>
       <p><b>${esc(money(f.rate))}</b> - ${esc(f.location || 'Area not given')}${f.experienceYears != null ? ' - ' + f.experienceYears + ' years of experience' : ''}</p>
       <div>${f.services.map((s) => `<span class="tag">${esc(s)}</span>`).join('')}</div>
       <p>${f.rating ? `Rated ${f.rating} from ${plural(f.reviewCount, 'review')}` : 'No reviews yet'}${f.workCount ? ' - ' + plural(f.workCount, 'photo') + ' of past work' : ''}</p>
@@ -205,6 +212,7 @@ async function runSearch() {
       ? list.map(fundiRow).join('')
       : '<p class="empty">No fundis match yet. Try another service, area or skill.</p>';
     showMessage($('#aimsg'), '', true);
+    if ($('#results').scrollIntoView) $('#results').scrollIntoView({ behavior: 'smooth' });   // bring the results into view
   } catch (err) { showMessage($('#aimsg'), err.message, false); }
 }
 $('#search').onclick = runSearch;
@@ -226,26 +234,42 @@ async function suggestService(text, selectEl, msgEl) {
 $('#suggest').onclick = () => suggestService($('#desc').value, $('#cat'), $('#aimsg'));
 
 // ---------- A fundi's public profile page ----------
+
 async function showProfile(id) {
   const from = currentView();
   const f = await api('/fundis/' + id);
-  const tags = (list) => (list.length ? list.map((s) => `<span class="tag">${esc(s)}</span>`).join('') : '<p>Nothing added yet.</p>');
+
+  const tags = (list) => (
+    list.length
+      ? list.map((s) => `<span class="tag">${esc(s)}</span>`).join('')
+      : '<p>Nothing added yet.</p>'
+  );
+
   const gallery = f.portfolio.length
     ? `<div class="gallery">${f.portfolio.map((w) => `<figure><img src="/api/portfolio/${esc(w.id)}/image" alt="${esc(w.caption || 'Work by ' + f.name)}" loading="lazy"><figcaption>${esc(w.caption)}${w.price != null ? ` <b>KES ${Number(w.price).toLocaleString()}</b>` : ''}</figcaption></figure>`).join('')}</div>`
     : '<p class="empty">No photos of past work yet.</p>';
+
   $('#view-profile').innerHTML = `
     <button class="ghost small" data-go="${from === 'profile' ? 'find' : from}">Back</button>
-    <h1>${esc(f.name)}</h1>
+
+    <div class="public-profile-heading">
+      ${avatar(f.fundiId, f.name, f.hasPhoto, 'public-profile-avatar')}
+      <h1>${esc(f.name)}</h1>
+    </div>
+
     <p><b>${esc(money(f.rate))}</b> - ${esc(f.location || 'Area not given')} - ${esc(availabilityText[f.availability])}</p>
     <p>${f.rating ? `Rated ${f.rating} from ${plural(f.reviewCount, 'review')}` : 'No reviews yet'}${f.experienceYears != null ? ' - ' + f.experienceYears + ' years of experience' : ''}</p>
+
     <h2>Services</h2>${tags(f.services)}
     <h2>Skills</h2>${tags(f.skills)}
     <h2>About</h2><p>${esc(f.description || 'This fundi has not written a description yet.')}</p>
     <h2>Work done</h2>${gallery}
     <h2>Reviews</h2>
     ${f.reviews.length ? f.reviews.map((r) => `<div class="item"><div><h3>${esc(r.rating)} out of 5</h3><p>${esc(r.comment || '')}</p><p>${esc(r.client)}</p></div></div>`).join('') : '<p class="empty">No reviews yet.</p>'}`;
+
   show('profile');
 }
+
 
 // ---------- Dashboards ----------
 async function renderDash() {
@@ -274,7 +298,8 @@ const clientJobRow = (j) => `<div class="item">
 
 async function renderClientDash(el) {
   const jobs = await api('/jobs/mine');
-  el.innerHTML = `<h1>My jobs</h1>
+ el.innerHTML = `<h1>My jobs</h1>
+    ${photoPanel()}
     <p id="dmsg" class="msg" role="status"></p>
     <h2>Post a job</h2>
     <form id="postjob">
@@ -376,16 +401,70 @@ const userRow = (u) => `<div class="item">
 </div>`;
 
 async function renderAdminDash(el) {
-  const [s, users] = await Promise.all([api('/admin/stats'), api('/admin/users')]);
-  el.innerHTML = `<h1>Administration</h1>
-    <p id="dmsg" class="msg" role="status"></p>
-    <h2>Platform summary</h2>
-    <p>${plural(s.clients, 'client')} and ${plural(s.fundis, 'fundi')}.</p>
-    <p>${plural(s.jobs.total, 'job')} posted: ${s.jobs.open} open, ${s.jobs.assigned} in progress, ${s.jobs.completed} completed, ${s.jobs.cancelled} cancelled.</p>
-    <p>${plural(s.offers, 'offer')} and ${plural(s.reviews, 'review')}.</p>
-    <h2 style="margin-top:1.5rem">Users</h2>
-    ${users.map(userRow).join('')}`;
+  const [s, users] = await Promise.all([
+    api('/admin/stats'),
+    api('/admin/users')
+  ]);
+
+  el.innerHTML = `
+    <div class="admin-dashboard">
+      <h1>Administration</h1>
+      <p class="admin-intro">Manage users and monitor Ujuzi Connect activity.</p>
+
+      <p id="dmsg" class="msg" role="status"></p>
+
+      <h2>Platform summary</h2>
+
+      <div class="admin-stats">
+        <div class="admin-stat">
+          <span>Clients</span>
+          <strong>${s.clients}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Fundis</span>
+          <strong>${s.fundis}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Total jobs</span>
+          <strong>${s.jobs.total}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Open jobs</span>
+          <strong>${s.jobs.open}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>In progress</span>
+          <strong>${s.jobs.assigned}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Completed jobs</span>
+          <strong>${s.jobs.completed}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Cancelled jobs</span>
+          <strong>${s.jobs.cancelled}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Offers</span>
+          <strong>${s.offers}</strong>
+        </div>
+        <div class="admin-stat">
+          <span>Reviews</span>
+          <strong>${s.reviews}</strong>
+        </div>
+      </div>
+
+      <h2 class="admin-users-heading">Users</h2>
+
+      <div class="admin-users">
+        ${users.length
+          ? users.map(userRow).join('')
+          : '<p class="empty">No users found.</p>'}
+      </div>
+    </div>
+  `;
 }
+
 
 // ===== FUNDI =====
 const tabsBar = () => `<div class="actions" style="margin:0 0 1.5rem">${[['profile', 'My profile'], ['work', 'My work'], ['board', 'Job board'], ['offers', 'My offers']]
@@ -403,7 +482,8 @@ async function renderProfileForm(el) {
   const mine = new Set((p.serviceCategories || []).map(String));
   const option = (value, label, current) => `<option value="${value}" ${current === value ? 'selected' : ''}>${label}</option>`;
 
-  el.innerHTML = `${tabsBar()}<h1>My profile</h1>
+ el.innerHTML = `${tabsBar()}<h1>My profile</h1>
+    ${photoPanel()}
     <p>Clients see this information. Your phone number stays private until a client hires you.</p>
     <form id="profile">
       <label>Services you offer</label>
@@ -558,6 +638,53 @@ async function renderMyWork(el) {
     } catch (err) { showMessage($('#dmsg'), err.message, false); }
   };
 }
+
+// A service card on the home page: finds the matching service, then searches for fundis who offer it
+async function searchService(key) {
+  const cat = state.cats.find((c) => c.name.toLowerCase().startsWith(key));
+  if (!cat) throw new Error('The services are still loading. Please try again in a moment.');
+  return dropdownAction('hirecat', cat.id);
+}
+
+// ---------- Home page: service tiles, and the footer "Our network" ----------
+const icons = {
+  plumbing: '<path d="M12 3s6 6.2 6 10.5A6 6 0 0 1 6 13.5C6 9.2 12 3 12 3z"/>',
+  electrical: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  carpentry: '<path d="M13.5 3.5l7 7-3 3-7-7z"/><path d="M10 8L3 15l3 3 7-7"/>',
+  masonry: '<path d="M3 6h18v4H3zM3 14h18v4H3z"/><path d="M9 6v4M15 14v4"/>',
+  painting: '<rect x="4" y="3" width="14" height="6" rx="1"/><path d="M18 6h2v5h-8v3"/><rect x="10" y="14" width="4" height="7" rx="1"/>',
+  welding: '<path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/>',
+  appliance: '<path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/>',
+  default: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.1L3 17.7 6.3 21l6.300-6.300a4 4 0 0 0 5.100-5.400L15 12l-3-3z"/>',
+};
+const iconFor = (name) => icons[Object.keys(icons).find((k) => name.toLowerCase().startsWith(k)) || 'default'];
+
+// One tile for each service. Clicking a tile searches for fundis in that service.
+function renderTiles() {
+  if (!document.querySelector('#tiles')) return;       // this page has no tile area, so there is nothing to draw
+  $('#tiles').innerHTML = state.cats.map((c) => `<button class="tile" data-act="hirecat" data-id="${esc(c.id)}">
+    <span class="tile-ico"><svg viewBox="0 0 24 24" aria-hidden="true">${iconFor(c.name)}</svg></span><b>${esc(c.name)}</b></button>`).join('');
+}
+
+
+function renderFooterNetwork() {
+  if (!document.querySelector('#footnet')) return;
+
+  const s = state.stats;
+
+  const facts = [];
+  if (s && s.fundis) facts.push(`${s.fundis} fundis`);
+  if (s && s.completed) facts.push(`${s.completed} jobs`);
+  if (s && s.reviews) facts.push(`${s.reviews} reviews`);
+
+  const services = ['Plumbing', 'Carpentry', 'Electrical', 'More'];
+
+  $('#footnet').innerHTML = `
+    <p class="stat">${facts.length ? facts.map(esc).join(' · ') : 'A growing network of skilled fundis'}</p>
+    <p class="footer-services">${services.map(esc).join(' · ')}</p>
+  `;
+}
+
 
 // ---------- Help assistant ----------
 const botQuestions = ['How do I post a job?', 'How do I get jobs as a fundi?', 'How do I pay?', 'Is my phone number safe?'];
@@ -808,14 +935,23 @@ document.addEventListener('click', async (e) => {
       if (part.scrollIntoView) part.scrollIntoView();
     }
     else if (act === 'inbox') await showInbox();
-    else if (act === 'chat') await openChat(b.dataset.job, id);
-    else if (act === 'postjob') await startPostJob();
-    else if (act === 'delwork') {
-      if (!confirm('Delete this photo?')) return;
-      await api('/portfolio/' + id, { method: 'DELETE' });
-      await renderDash();
-      showMessage($('#dmsg'), 'Photo deleted.', true);
-    }
+else if (act === 'chat') await openChat(b.dataset.job, id);
+else if (act === 'service') await searchService(b.dataset.key);
+else if (act === 'postjob') await startPostJob();
+
+else if (act === 'delwork') {
+  if (!confirm('Delete this photo?')) return;
+  await api('/portfolio/' + id, { method: 'DELETE' });
+  await renderDash();
+  showMessage($('#dmsg'), 'Photo deleted.', true);
+}
+else if (act === 'uploadphoto') {
+  await uploadPhoto();
+}
+else if (act === 'removephoto') {
+  if (!confirm('Remove your profile photo?')) return;
+  await removePhoto();
+}
     else if (act === 'auth') { show('auth'); setAuthMode(b.dataset.mode); }
     else if (act === 'regnext') setRegStep(2);
     else if (act === 'regback') setRegStep(1);
@@ -853,6 +989,16 @@ document.addEventListener('click', async (e) => {
     }
   } catch (err) { showMessage(visibleMessage(), err.message, false); }
 });
+document.addEventListener('change', async (e) => {
+  if (e.target.matches('#pf') && e.target.files.length > 0) {
+    await uploadPhoto();
+  }
+});
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#photoCamera')) {
+    document.getElementById('pf')?.click();
+  }
+});
 
 // ---------- When the page opens ----------
 renderNav();
@@ -860,6 +1006,8 @@ api('/categories')
   .then((cats) => {
     state.cats = cats;
     renderNav();                       // the menus list the services, so draw them again
+    renderTiles();
+    renderFooterNetwork();
     $('#cat').insertAdjacentHTML('beforeend', cats.map((c) => `<option value="${esc(c.id)}">${esc(c.name)}</option>`).join(''));
   })
   .catch(() => showMessage($('#aimsg'), 'Could not load the services. Refresh the page.', false));
@@ -876,3 +1024,6 @@ if (resetParam) {
 // Messages: check for new ones when the page opens, then every 30 seconds
 refreshUnread();
 setInterval(refreshUnread, 30000);
+
+// The footer shows how big the network is
+api('/stats').then((s) => { state.stats = s; renderFooterNetwork(); }).catch(() => renderFooterNetwork());

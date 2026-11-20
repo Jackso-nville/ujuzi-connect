@@ -1,4 +1,4 @@
-// The five things the platform stores. Each "model" becomes a MongoDB collection.
+// The eight things the platform stores. Each "model" becomes a MongoDB collection.
 const { Schema, model } = require('mongoose');
 
 // Shortcut for "this field holds the id of a document in another collection"
@@ -14,6 +14,9 @@ const User = model('User', new Schema({
   location: { type: String, trim: true, maxlength: 80 },   // client's area (shown on their profile)
   resetTokenHash: String,                                  // password reset: only a scrambled copy of the token is stored
   resetTokenExpires: Date,                                 // the reset link stops working after 30 minutes
+  hasPhoto: { type: Boolean, default: false },             // does this user have a profile photo?
+  photo: { type: Buffer, select: false },                  // the profile photo itself (left out of normal queries)
+  photoType: { type: String, select: false },              // image/jpeg, image/png or image/webp
 }, { timestamps: true }));
 
 // 2. SERVICE CATEGORIES: plumbing, electrical and so on

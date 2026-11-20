@@ -5,6 +5,7 @@
   <!-- Makes the page fit phone screens instead of shrinking a desktop layout -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ujuzi Connect</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
 
   <!-- The font (Archivo) comes from Google Fonts; the CSS falls back to system fonts if offline -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,10 +20,10 @@
   <!-- TOP BAR: brand on the left, navigation buttons on the right.
        The buttons inside <nav> are filled in by app.js depending on who is logged in. -->
   <header>
-<button class="brand" data-go="find" aria-label="Ujuzi Connect home">
-    <img src="logo.png" alt="Ujuzi Connect" class="brand-logo">
-    <span>Ujuzi Connect</span>
-</button>
+    <button class="brand" data-go="find" aria-label="Ujuzi Connect home">
+      <img src="logo.png" alt="Ujuzi Connect logo" class="brand-logo">
+    </button>
+
     <!-- Top menu on computers: Hire a fundi, Find a job, Log in, Sign up. app.js fills it in. -->
     <nav id="topnav" class="topnav" aria-label="Main"></nav>
 
@@ -37,39 +38,218 @@
        app.js shows or hides them. The "hidden" attribute hides a section. -->
   <main>
 
-    <!-- SCREEN 1: find a fundi (the home page) -->
+    <!-- SCREEN 1: the home page -->
     <section id="view-find">
-      <h1>Tell us what you need done.<br>We will find the fundi.</h1>
 
-      <label for="desc">Describe the job in your own words</label>
-      <textarea id="desc" rows="3" maxlength="1000" placeholder="My bedroom socket sparks"></textarea>
+      <!-- NEW HOMEPAGE HERO -->
+<div class="landing-hero">
+  <div class="landing-content">
+    <span class="landing-tag">YOUR SKILLS. YOUR CONNECTIONS.</span>
 
-      <div class="row">
-        <div>
-          <label for="cat">Service</label>
-          <select id="cat"><option value="">Any service</option></select>
+    <h1>Connecting Skills to Opportunities.</h1>
+
+    <p>
+      Whether you need a skilled fundi or you're looking for your next job,
+      Ujuzi Connect brings people and skills together in one place.
+    </p>
+
+    <div class="landing-buttons">
+      <button data-go="search">Find a Fundi</button>
+      <button class="ghost" data-act="signupfundi">Join as a Fundi</button>
+    </div>
+
+    <p class="landing-note">
+      Discover skilled workers. Showcase your talent. Get connected.
+    </p>
+  </div>
+</div>
+
+                <!-- SERVICE CATEGORIES: each card searches for fundis who offer that service -->
+      <div class="home-services">
+        <h2 class="band">Explore our services</h2>
+        <p class="lead">Choose a service to see the fundis who offer it.</p>
+        
+<div class="cards service-cards">
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="electrical">
+    <img class="service-photo" src="images/services/electrical.jpg" alt="Electrician working on electrical wiring">
+    <h3>Electrical Work</h3>
+    <p>Wiring, installation and electrical repairs.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="plumbing">
+    <img class="service-photo" src="images/services/plumbing.jpg" alt="Plumber repairing water pipes">
+    <h3>Plumbing</h3>
+    <p>Pipe installation, leak repairs and maintenance.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="carpentry">
+    <img class="service-photo" src="images/services/carpentry.jpg" alt="Carpenter working with wood">
+    <h3>Carpentry</h3>
+    <p>Furniture, cabinets and woodwork.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="masonry">
+    <img class="service-photo" src="images/services/masonry.jpg" alt="Mason laying bricks">
+    <h3>Masonry</h3>
+    <p>Brickwork, construction and building repairs.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="painting">
+    <img class="service-photo" src="images/services/painting.jpg" alt="Painter painting a wall">
+    <h3>Painting</h3>
+    <p>Interior and exterior painting services.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="welding">
+    <img class="service-photo" src="images/services/welding.jpg" alt="Welder working with metal">
+    <h3>Welding</h3>
+    <p>Metal fabrication and welding services.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+  <div class="card service-card" role="button" tabindex="0" data-act="service" data-key="appliance">
+    <img class="service-photo" src="images/services/appliance-repair.jpg" alt="Technician repairing a household appliance">
+    <h3>Appliance Repair</h3>
+    <p>Repair and maintenance of household appliances.</p>
+    <span class="service-go">Find fundis</span>
+  </div>
+
+<div class="card service-card" role="button" tabindex="0" data-act="service" data-key="tailoring">
+  <img class="service-photo" src="images/services/tailoring.jpg" alt="Tailor sewing clothes">
+  <h3>Tailoring</h3>
+  <p>Clothing design, stitching, alterations and repairs.</p>
+  <span class="service-go">Find fundis</span>
+</div>  <!-- closes Tailoring card -->
+
+</div>  <!-- closes service-cards -->
+
+</div>  <!-- closes home-services -->
+
+
+      <!-- For fundis. Add your own photo as images/fundis.jpg (see images/README.txt). -->
+      <div class="cta">
+        <div class="cta-text">
+          <h2>Are you a fundi? Find your next job.</h2>
+          <p>Build a profile with your prices and photos of your work, browse open jobs for your services and send offers.</p>
+          <div class="jump">
+            <button class="dark" data-act="signupfundi">Create a fundi account</button>
+            <button class="ghost dark" data-act="audience" data-who="fundis">How fundis get started</button>
+          </div>
         </div>
-        <div>
-          <label for="loc">Your area</label>
-          <input id="loc" maxlength="80" placeholder="Nairobi">
-        </div>
+        <div class="cta-photo" role="img" aria-label="Fundis at work"></div>
       </div>
+<section class="how-home">
+  <h2 class="band">How Ujuzi Connect Works</h2>
+  <p class="lead">Getting the right skills for your job is simple.</p>
 
-      <label for="skl">Skill (optional)</label>
-      <input id="skl" maxlength="40" placeholder="wiring, tiling, fridge repair">
+  <div class="cards how-cards">
+    <div class="card how-card">
+      <span class="how-number">01</span>
+      <h3>Describe Your Job</h3>
+      <p>Tell us what you need done. Our AI assistant can help identify the right service.</p>
+    </div>
 
-      <div class="actions">
-        <button id="suggest" class="ghost">Suggest a service</button>
-        <button id="search">Show fundis</button>
-        <button class="ghost" data-act="postjob">Post a job</button>
-      </div>
+    <div class="card how-card">
+      <span class="how-number">02</span>
+      <h3>Find Your Fundi</h3>
+      <p>Explore recommended skilled fundis and compare their prices, work photos and reviews.</p>
+    </div>
 
-      <!-- Messages (errors, AI suggestion) appear here -->
-      <p id="aimsg" class="msg" role="status"></p>
+    <div class="card how-card">
+      <span class="how-number">03</span>
+      <h3>Get the Job Done</h3>
+      <p>Choose the fundi you trust, agree on the details and pay them directly.</p>
+    </div>
+  </div>
 
-      <!-- The list of recommended fundis appears here -->
-      <div id="results"></div>
+  <div class="how-action">
+    <button data-go="how">Learn More About How It Works</button>
+  </div>
+</section>
+
+<section class="why-home">
+  <h2 class="band">Why Choose Ujuzi Connect?</h2>
+  <p class="lead">A smarter and simpler way to connect skills with opportunities.</p>
+
+  <div class="cards why-cards">
+    <div class="card why-card">
+      <span class="why-icon">🤖</span>
+      <h3>AI-Powered Matching</h3>
+      <p>Get recommendations based on your job requirements, service and location.</p>
+    </div>
+
+    <div class="card why-card">
+      <span class="why-icon">💰</span>
+      <h3>Transparent Pricing</h3>
+      <p>Compare fundis' prices before deciding who to hire.</p>
+    </div>
+
+    <div class="card why-card">
+      <span class="why-icon">⭐</span>
+      <h3>Reviews You Can Trust</h3>
+      <p>Read reviews from clients who have completed jobs with fundis.</p>
+    </div>
+
+    <div class="card why-card">
+      <span class="why-icon">🔒</span>
+      <h3>Privacy Matters</h3>
+      <p>Your contact details stay private until an offer is accepted.</p>
+    </div>
+  </div>
+  <!-- Final homepage call to action -->
+<div class="final-cta">
+  <h2>Ready to Get Connected?</h2>
+  <p>Find skilled professionals for your next project or turn your skills into new opportunities.</p>
+
+  <div class="final-cta-buttons">
+    <button data-go="search">Find a Fundi</button>
+    <button class="ghost" data-act="signupfundi">Join as a Fundi</button>
+  </div>
+</div>
+</section>
+
     </section>
+
+    <!-- SCREEN 2: Find a fundi -->
+<section id="view-search" hidden>
+  <h1>Find the right fundi for your job</h1>
+  <p class="lead">Describe what you need, choose a service and explore skilled fundis near you.</p>
+
+  <div class="hero-panel">
+    <label for="desc">Describe the job in your own words</label>
+    <textarea id="desc" rows="3" maxlength="1000" placeholder="My bedroom socket sparks"></textarea>
+
+    <div class="row">
+      <div>
+        <label for="cat">Service</label>
+        <select id="cat"><option value="">Any service</option></select>
+      </div>
+      <div>
+        <label for="loc">Your area</label>
+        <input id="loc" maxlength="80" placeholder="Nairobi">
+      </div>
+    </div>
+
+    <label for="skl">Skill (optional)</label>
+    <input id="skl" maxlength="40" placeholder="wiring, tiling, fridge repair">
+
+    <div class="actions">
+      <button id="suggest">Suggest a service</button>
+      <button id="search">Show fundis</button>
+      <button data-act="postjob">Post a job</button>
+    </div>
+
+    <p id="aimsg" class="msg" role="status"></p>
+  </div>
+
+  <div id="results"></div>
+</section>
 
     <!-- SCREEN 2: log in, create an account, forgot password. Only one form shows at a time. -->
     <section id="view-auth" hidden>
@@ -248,16 +428,102 @@
         </ul>
       </div>
     </section>
-  </main>
+
+<!-- TERMS AND CONDITIONS PAGE -->
+<section id="view-terms" hidden>
+  <div class="page-content">
+    <h1>Terms & Conditions</h1>
+    <p>Welcome to Ujuzi Connect. By accessing or using this platform, you agree to these terms.</p>
+
+    <h2>1. Use of the Platform</h2>
+    <p>Ujuzi Connect connects clients with skilled informal workers (fundis). Users must provide accurate information and use the platform responsibly.</p>
+
+    <h2>2. Client Responsibilities</h2>
+    <p>Clients should provide clear job descriptions, communicate respectfully and agree on service costs and arrangements directly with fundis.</p>
+
+    <h2>3. Fundi Responsibilities</h2>
+    <p>Fundis should provide truthful information about their skills, qualifications and experience, communicate professionally and deliver services as agreed with clients.</p>
+
+    <h2>4. Bookings and Payments</h2>
+    <p>Clients and fundis are responsible for agreeing on service charges, payment arrangements and job completion details. Ujuzi Connect does not guarantee the quality of work or act as a payment intermediary unless explicitly stated.</p>
+
+    <h2>5. Reviews and Ratings</h2>
+    <p>Reviews should be honest, respectful and based on genuine experiences. False, abusive or misleading reviews are not permitted.</p>
+
+    <h2>6. Prohibited Activities</h2>
+    <p>Users must not engage in fraud, harassment, impersonation, unlawful activities or misuse of another person's information.</p>
+
+    <h2>7. Account Suspension</h2>
+    <p>Ujuzi Connect may restrict or suspend accounts involved in misconduct or violations of these terms, subject to applicable law.</p>
+
+    <h2>8. Changes to These Terms</h2>
+    <p>These terms may be updated when necessary. Continued use of the platform after an update constitutes acceptance of the revised terms.</p>
+
+    <h2>9. Contact</h2>
+    <p>For questions about these terms, contact the Ujuzi Connect administration through the platform.</p>
+
+    <button data-go="find">Back to Home</button>
+  </div>
+</section>
+
+<!-- PRIVACY POLICY PAGE -->
+<section id="view-privacy" hidden>
+  <div class="page-content">
+    <h1>Privacy Policy</h1>
+    <p>Ujuzi Connect values your privacy and is committed to handling personal information responsibly in accordance with Kenya's Data Protection Act, 2019.</p>
+
+    <h2>1. Information We Collect</h2>
+    <p>We may collect names, email addresses, phone numbers, account details, location information, fundi profiles, job requests, reviews and profile photographs.</p>
+
+    <h2>2. How We Use Information</h2>
+    <p>Information is used to create accounts, connect clients with fundis, process job requests, improve search and recommendations, support communication and maintain platform security.</p>
+
+    <h2>3. Sharing of Information</h2>
+    <p>Relevant profile and contact information may be shared with other users when necessary to facilitate service connections. We do not sell personal information.</p>
+
+    <h2>4. Data Security</h2>
+    <p>We take reasonable measures to protect personal information against unauthorized access, loss, misuse or disclosure.</p>
+
+    <h2>5. Data Retention</h2>
+    <p>Personal information is retained only for as long as necessary for the purposes for which it was collected, or as required by applicable law.</p>
+
+    <h2>6. Your Privacy Rights</h2>
+    <p>Subject to applicable law, you may request access to your personal information, correction of inaccurate information, deletion where applicable, or object to certain processing.</p>
+
+    <h2>7. Cookies and Technical Information</h2>
+    <p>The platform may use cookies or similar technologies where necessary to support functionality and improve user experience.</p>
+
+    <h2>8. Changes to This Policy</h2>
+    <p>This policy may be updated when platform practices or legal requirements change.</p>
+
+    <h2>9. Contact</h2>
+    <p>For privacy-related questions or requests, contact the Ujuzi Connect administration through the platform.</p>
+
+    <button data-go="find">Back to Home</button>
+  </div>
+</section>
+</main>
+
 
   <footer>
     <div class="foot">
-      <div><b>Ujuzi Connect</b><p>Skilled fundis, found fast.</p></div>
+      <div>
+        <img src="logo.png" alt="Ujuzi Connect" class="foot-logo">
+        <p>Skilled fundis, found fast.</p>
+      </div>
       <div><b>About</b>
-        <button data-go="about">About us</button>
-        <button data-go="how">How it works</button>
-        <button data-go="how" data-scroll="safety">Safe and secure</button></div>
-    </div>
+  <button data-go="about">About us</button>
+  <button data-go="how">How it works</button>
+  <button data-go="how" data-scroll="safety">Safe and secure</button>
+  <button data-go="terms">Terms & Conditions</button>
+  <button data-go="privacy">Privacy Policy</button>
+</div>
+<div>
+  <b>Our network</b>
+  <div id="footnet"></div>
+</div>
+    </div> <!-- Closes the footer columns -->
+
     <p class="copy">&copy; 2026 Ujuzi Connect</p>
   </footer>
 
@@ -284,6 +550,6 @@
     <p class="note">I answer questions about using Ujuzi Connect and can make mistakes. Never share your password.</p>
   </aside>
 
-  <script src="app.js"></script>
-</body>
+<script src="photo.js"></script>
+<script src="app.js"></script></body>
 </html>

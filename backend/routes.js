@@ -1,6 +1,7 @@
 // The API: the addresses the browser calls to do things.
 // Stage 14 contains: sign up, log in, categories, fundi profiles and prices, browsing fundis,
 // the job board (post jobs, send offers, accept one), the AI suggestion, ranked search, recommendations and invitations on each job, reviews and the administrator tools.
+// Stage 17 adds: profile photos and /stats (in extras.js), and a help assistant that checks live jobs (in live.js).
 const router = require('express').Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
@@ -28,7 +29,7 @@ const auth = (...roles) => (req, res, next) => {
 
 const session = (u) => ({
   token: jwt.sign({ id: String(u._id), role: u.role, name: u.name }, process.env.JWT_SECRET, { expiresIn: '12h' }),
-  user: { id: String(u._id), name: u.name, role: u.role },
+  user: { id: String(u._id), name: u.name, role: u.role, hasPhoto: !!u.hasPhoto },
 });
 
 // ---------- Sign up and log in ----------
@@ -136,13 +137,13 @@ router.get('/fundis', wrap(async (req, res) => {
 // One fundi's public profile page. Phone and email are never included here.
 router.get('/fundis/:id', wrap(async (req, res) => {
   if (!isId(req.params.id)) return bad(res, 'Fundi not found.', 404);
-  const p = await FundiProfile.findOne({ userId: req.params.id }).populate('userId', 'name createdAt').populate('serviceCategories', 'name').lean();
+  const p = await FundiProfile.findOne({ userId: req.params.id }).populate('userId', 'name createdAt hasPhoto').populate('serviceCategories', 'name').lean();
   if (!p || !p.userId) return bad(res, 'Fundi not found.', 404);
   const reviews = await Review.find({ fundiId: req.params.id }).sort('-createdAt').limit(20).populate('clientId', 'name').lean();
   const work = await PortfolioItem.find({ fundiId: req.params.id }, 'caption priceAmount').sort('-createdAt').limit(12).lean();   // no photo data here
   const avg = reviews.length ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : null;
   res.json({
-    fundiId: p.userId._id, name: p.userId.name, memberSince: p.userId.createdAt, location: p.location || '',
+    fundiId: p.userId._id, hasPhoto: !!p.userId.hasPhoto, name: p.userId.name, memberSince: p.userId.createdAt, location: p.location || '',
     skills: p.skills || [], services: (p.serviceCategories || []).map((c) => c.name), experienceYears: p.experienceYears,
     availability: p.availability, description: p.description || '', rate: p.rate || null,
     rating: avg ? Number(avg.toFixed(1)) : null, reviewCount: reviews.length,
@@ -274,11 +275,16 @@ router.post('/messages', auth('client', 'fundi'), wrap(async (req, res) => {
 }));
 
 // ====================== THE HELP ASSISTANT ======================
-// Open to everyone, including visitors who have not signed up
+// Open to everyone, including visitors who have not signed up.
+// If the person is logged in, the assistant knows their role, so it can answer questions about live jobs.
+const optionalUser = (req) => {
+  try { return jwt.verify((req.headers.authorization || '').replace('Bearer ', ''), process.env.JWT_SECRET); }
+  catch { return null; }
+};
 router.post('/assistant', wrap(async (req, res) => {
   const message = str(req.body.message, 300);
   if (message.length < 2) return bad(res, 'Type a question first.');
-  res.json(await assistantAnswer(message));
+  res.json(await assistantAnswer(message, optionalUser(req)));
 }));
 
 // ====================== AI AND RECOMMENDATIONS ======================
@@ -531,5 +537,8 @@ router.delete('/admin/users/:id', auth('admin'), wrap(async (req, res) => {
   await user.deleteOne();
   res.json({ ok: true });
 }));
+
+// Profile photos (/me/photo, /users/:id/photo) and the public /stats numbers live in extras.js
+require('./extra')(router, { auth, wrap, bad, readPhoto });
 
 module.exports = router;

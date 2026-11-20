@@ -14,13 +14,16 @@
 /* ---------- 2. BASICS ---------- */
 *{box-sizing:border-box}   /* padding no longer makes boxes wider than set */
 html{font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.5}
-body{margin:0}
+body{margin:0;overflow-x:hidden}
 
 /* ---------- 3. TOP BAR ---------- */
 header{position:relative;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding:.75rem clamp(1rem,4vw,2.5rem);background:var(--ink)}
 header button{background:none;border:0;color:#fff;padding:.4rem .6rem;font-weight:500;cursor:pointer}
 header button:hover{color:var(--signal)}
-header .brand{font-weight:800;font-size:1.25rem;font-stretch:80%;padding-left:.9rem;border-left:.5rem solid var(--signal)}
+/* your logo.png */
+header .brand{display:flex;align-items:center;justify-content:center;padding:0;border:none;background:transparent}
+header .brand:hover{background:transparent}
+.brand-logo{display:block;width:155px;height:55px;object-fit:contain}
 /* The hamburger menu: three lines on the right, links appear in a panel when clicked */
 .menu-btn{display:flex;flex-direction:column;gap:5px;padding:.6rem .5rem!important}
 .menu-btn span{display:block;width:26px;height:3px;background:#fff;border-radius:2px}
@@ -32,7 +35,7 @@ header .brand{font-weight:800;font-size:1.25rem;font-stretch:80%;padding-left:.9
 #nav .who small{display:block;font-weight:400;color:#c9d3df}
 
 /* ---------- 4. PAGE CONTENT AND TEXT ---------- */
-main{max-width:52rem;margin:0 auto;padding:2rem clamp(1rem,4vw,2rem) 4rem}
+main{width:100%;max-width:56rem;margin:0 auto;padding:2rem clamp(1rem,4vw,2rem) 4rem}
 h1{font-size:clamp(2.2rem,7vw,3.6rem);font-weight:800;font-stretch:75%;line-height:1.02;margin:.5rem 0 1.5rem;letter-spacing:-.01em}
 h2{font-size:1.2rem;margin:0 0 .5rem}
 
@@ -151,12 +154,12 @@ h2.band{font-size:1.6rem;font-stretch:85%;margin:2.5rem 0 1rem;padding-top:1.25r
 .safe ul{margin:0;padding-left:1.2rem}
 .safe li{margin:.6rem 0}
 footer{background:var(--ink);color:#d5dde8;padding:2.5rem clamp(1rem,4vw,2.5rem) 1.5rem;margin-top:2rem}
-.foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:2rem;max-width:62rem;margin:0 auto}
+.foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:2rem;max-width:52rem;margin:0 auto}
 .foot b{display:block;color:#fff;margin-bottom:.5rem}
 .foot p{margin:0}
 footer button{display:block;background:none;border:0;color:#d5dde8;padding:.25rem 0;font-weight:500;text-align:left;cursor:pointer}
 footer button:hover{color:var(--signal);background:none}
-.copy{max-width:62rem;margin:2rem auto 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.9rem}
+.copy{max-width:52rem;margin:2rem auto 0;padding-top:1rem;border-top:1px solid rgba(255,255,255,.2);font-size:.9rem}
 
 /* ---------- 9f. MESSAGES ---------- */
 .badge{display:inline-block;background:var(--signal);color:var(--ink);border-radius:1rem;padding:0 .5rem;font-size:.8rem;font-weight:800;margin-left:.4rem}
@@ -199,9 +202,1619 @@ form.bot-form{display:flex;gap:.5rem;padding:.4rem .8rem}
 form.bot-form button{margin:0}
 .bot .note{margin:0;padding:0 .8rem .6rem}
 
+/* ---------- 9i. HOME PAGE ---------- */
+body{overflow-x:hidden}   /* the full-width banner must never cause sideways scrolling */
+
+/* The photo banner. Change the picture by replacing homepage-bg.jpg. */
+.home-hero{position:relative;width:100vw;margin:-2rem 0 2rem calc(50% - 50vw);min-height:78vh;padding:clamp(2rem,5vw,4rem) max(1rem,calc((100vw - 56rem) / 2 + clamp(1rem,4vw,2rem)));display:flex;flex-direction:column;justify-content:center;color:#fff;
+  background:linear-gradient(90deg,rgba(22,37,59,.86) 0%,rgba(22,37,59,.6) 50%,rgba(22,37,59,.2) 100%),url("homepage-bg.jpg") center/cover no-repeat,#16253b}
+.home-hero h1{color:#fff;max-width:40rem;margin-bottom:.75rem}
+.hero-sub{color:#e3e9f1;font-size:1.2rem;max-width:34rem;margin:0 0 1.5rem}
+/* A dark panel behind the form keeps the words readable on any photo */
+.hero-panel{background:rgba(22,37,59,.84);border:1px solid rgba(255,255,255,.18);border-radius:.7rem;padding:.5rem 1.5rem 1.2rem;max-width:38rem;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.home-hero label{color:#fff}
+.home-hero textarea{min-height:6rem}
+.home-hero .msg{color:#fff;min-height:0;margin:.75rem 0 0}
+.home-hero .msg.ok{color:#9be3c4}
+.home-hero .msg.err{color:#ffb4ab}
+/* The three buttons are yellow so they stand out on the dark panel */
+.home-hero .actions button{background:var(--signal);border-color:var(--signal);color:var(--ink)}
+.home-hero .actions button:hover{background:var(--signal-dk);border-color:var(--signal-dk);color:var(--ink)}
+
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:1rem;margin:0 0 1rem}
+.trust div{padding:.9rem 1rem;background:var(--panel);border-left:4px solid var(--signal);border-radius:.3rem}
+.trust b{display:block}
+.trust span{color:var(--mute);font-size:.9rem}
+
+/* Service cards: each one is clickable */
+.home-services{margin-top:2.5rem}
+.service-cards{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+.service-cards .service-card{flex:1 1 10rem;max-width:13.5rem}
+.service-card{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--signal);border-radius:.5rem;padding:1.2rem .8rem;text-align:center;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.service-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(22,37,59,.16)}
+.service-icon{display:block;font-size:2rem;margin-bottom:.6rem}
+.service-card h3{font-size:1rem;margin-bottom:.4rem}
+.service-card p{font-size:.85rem}
+.service-go{display:inline-block;margin-top:.7rem;font-weight:700;font-size:.85rem;text-decoration:underline}
+@media (prefers-reduced-motion:reduce){.service-card{transition:none}.service-card:hover{transform:none}}
+
+/* The yellow band for fundis */
+.cta{display:grid;grid-template-columns:1.2fr .8fr;margin-top:3rem;border-radius:.8rem;overflow:hidden;background:var(--signal)}
+.cta-text{padding:2rem clamp(1.25rem,4vw,2.5rem)}
+.cta-text h2{margin:0 0 .5rem;font-size:clamp(1.6rem,4vw,2.2rem);font-stretch:80%;line-height:1.1}
+.cta-text p{margin:0 0 1rem;max-width:30rem}
+.cta .jump{margin:0}
+.cta button.dark{background:var(--ink);border-color:var(--ink);color:#fff}
+.cta button.dark:hover{background:#0e1828;border-color:#0e1828}
+.cta button.ghost.dark{background:transparent;color:var(--ink)}
+.cta button.ghost.dark:hover{background:var(--ink);color:#fff}
+.cta-photo{min-height:13rem;background:url('images/fundis.jpg') center/cover no-repeat,url('images/tools.svg') center/70% no-repeat,#d99a06}
+
+/* Footer */
+.foot-logo{display:block;width:155px;height:auto;margin-bottom:.6rem}
+.foot .stat{color:#fff;font-weight:700;margin:.2rem 0}
+.foot .subhead{margin:1rem 0 .3rem;color:#fff;font-size:.85rem;font-weight:700}
+
+@media (max-width:52rem){
+  .cta{grid-template-columns:1fr}
+  .cta-photo{min-height:10rem;order:-1}
+}
+@media (max-width:34rem){
+  .home-hero{min-height:auto;padding:2rem 1rem}
+  .home-hero h1{font-size:2rem}
+}
+
 /* ---------- 10. PHONES (screens narrower than about 550px) ---------- */
 @media(max-width:34rem){
   .row{grid-template-columns:1fr}
   .item{grid-template-columns:1fr}
   .score{text-align:left}
+}
+/* Profile avatar in the top navigation */
+.avatar.nav-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  font-size: 14px;
+  font-weight: 700;
+  background: #e8eef7;
+  color: #315b85;
+  overflow: hidden;
+  border: 2px solid #ffffff;
+}
+/* Fundi profile photo in search results */
+.fundi-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.fundi-heading h3 {
+  margin: 0;
+}
+
+.avatar.fundi-avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8eef7;
+  color: #315b85;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+/* Public fundi profile heading */
+.public-profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.public-profile-heading h1 {
+  margin: 0;
+}
+
+.avatar.public-profile-avatar {
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8eef7;
+  color: #315b85;
+  font-size: 24px;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+
+/* Profile photo section */
+.photopanel {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+
+.photo-preview {
+  position: relative;
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+}
+
+.avatar.big {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 30px;
+}
+
+.photo-controls {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+
+.photo-controls p {
+  margin: 0;
+}
+
+.photo-controls .small.ghost {
+  padding: 2px 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Camera icon */
+.photo-camera {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: white;
+  display: grid;
+  place-items: center;
+  border: 2px solid white;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  z-index: 5;
+}
+
+.photo-camera:hover {
+  background: var(--signal);
+}
+
+
+/* Service card photographs */
+.service-photo {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+.service-card {
+  overflow: hidden;
+}
+
+.service-card h3 {
+  margin-top: 5px;
+}
+
+/* ---------- Fundi dashboard: Job Board ---------- */
+
+#view-dash h1 {
+  color: var(--ink);
+  font-size: 1.8rem;
+  margin: 1.2rem 0 0.4rem;
+  font-weight: 800;
+}
+
+#view-dash > p {
+  color: var(--mute);
+  line-height: 1.6;
+}
+
+/* Dashboard filter panel */
+#boardfilter {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 1.2rem;
+  margin: 1.4rem 0;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#boardfilter .row {
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#boardfilter label {
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+#boardfilter input,
+#boardfilter select {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 0.65rem;
+  background: white;
+  color: var(--ink);
+}
+
+#boardfilter button {
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 700;
+  border-radius: 9px;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  cursor: pointer;
+}
+
+#boardfilter button:hover {
+  background: var(--signal-dk);
+}
+
+/* Empty job-board messages */
+#view-dash .empty {
+  background: var(--panel);
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--mute);
+  margin-top: 1rem;
+}
+
+/* Small screen adjustments */
+@media (max-width: 600px) {
+  #boardfilter .row {
+    flex-direction: column;
+  }
+
+  #boardfilter button {
+    width: 100%;
+  }
+
+  #view-dash h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ---------- Job listing cards ---------- */
+
+#view-dash .item {
+  display: flex;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--signal);
+  border-radius: 13px;
+  padding: 1.2rem;
+  margin: 1rem 0;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#view-dash .item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(22, 37, 59, 0.09);
+}
+
+#view-dash .item h3 {
+  color: var(--ink);
+  font-size: 1.1rem;
+  margin: 0 0 0.7rem;
+}
+
+#view-dash .item p {
+  color: var(--mute);
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+#view-dash .item p b {
+  color: var(--ok);
+  font-size: 1.05rem;
+}
+
+/* Offer message and button */
+#view-dash .inlineform {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+#view-dash .inlineform input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+#view-dash .inlineform button {
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 700;
+  border: none;
+  border-radius: 9px;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+}
+
+#view-dash .inlineform button:hover {
+  background: var(--signal-dk);
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+  #view-dash .inlineform {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #view-dash .inlineform button {
+    width: 100%;
+  }
+
+  #view-dash .item {
+    padding: 1rem;
+  }
+}
+
+/* ---------- Fundi dashboard navigation tabs ---------- */
+
+#view-dash > .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0 3px 10px rgba(22, 37, 59, 0.04);
+}
+
+#view-dash > .actions button {
+  border-radius: 9px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Active tab */
+#view-dash > .actions button:not(.ghost) {
+  background: var(--ink);
+  color: white;
+  border: 1px solid var(--ink);
+}
+
+/* Inactive tabs */
+#view-dash > .actions button.ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid transparent;
+}
+
+#view-dash > .actions button.ghost:hover {
+  background: #f2f4f3;
+  border-color: var(--line);
+}
+
+@media (max-width: 480px) {
+  #view-dash > .actions button {
+    flex: 1 1 40%;
+  }
+}
+
+/* ---------- Fundi profile editor ---------- */
+
+#view-dash #profile {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 1.4rem;
+  margin: 1.2rem 0;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#view-dash #profile > label {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  margin: 1rem 0 0.45rem;
+}
+
+#view-dash #profile input:not([type="checkbox"]),
+#view-dash #profile select,
+#view-dash #profile textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  box-sizing: border-box;
+}
+
+#view-dash #profile input:focus,
+#view-dash #profile select:focus,
+#view-dash #profile textarea:focus {
+  outline: 2px solid var(--signal);
+  border-color: var(--signal-dk);
+}
+
+#view-dash #profile .checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.7rem;
+  margin: 0.7rem 0 1.2rem;
+}
+
+#view-dash #profile .checks label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  background: #f7f8f7;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+#view-dash #profile .checks input {
+  accent-color: var(--ok);
+}
+
+#view-dash #profile > button {
+  margin-top: 1.2rem;
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 800;
+  border: none;
+  border-radius: 9px;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+}
+
+#view-dash #profile > button:hover {
+  background: var(--signal-dk);
+}
+
+@media (max-width: 600px) {
+  #view-dash #profile {
+    padding: 1rem;
+  }
+
+  #view-dash #profile .row {
+    flex-direction: column;
+  }
+}
+
+/* ---------- Fundi portfolio / My Work ---------- */
+
+#view-dash #workform {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 1.4rem;
+  margin: 1.3rem 0 1.8rem;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#view-dash #workform label {
+  display: block;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 1rem 0 0.45rem;
+}
+
+#view-dash #workform input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+#view-dash #workform input:focus {
+  outline: 2px solid var(--signal);
+  border-color: var(--signal-dk);
+}
+
+#view-dash #workform button {
+  margin-top: 1.2rem;
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 800;
+  border: none;
+  border-radius: 9px;
+  padding: 0.8rem 1.4rem;
+  cursor: pointer;
+}
+
+#view-dash #workform button:hover {
+  background: var(--signal-dk);
+}
+
+/* Portfolio image gallery */
+#view-dash .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1.3rem;
+}
+
+#view-dash .gallery figure {
+  margin: 0;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(22, 37, 59, 0.07);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#view-dash .gallery figure:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(22, 37, 59, 0.12);
+}
+
+#view-dash .gallery img {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+#view-dash .gallery figcaption {
+  padding: 1rem;
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+#view-dash .gallery figcaption b {
+  color: var(--ok);
+}
+
+#view-dash .gallery figcaption button {
+  margin-top: 0.7rem;
+  color: var(--bad);
+  border-color: var(--line);
+}
+
+@media (max-width: 480px) {
+  #view-dash .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  #view-dash #workform {
+    padding: 1rem;
+  }
+}
+
+/* ---------- Fundi dashboard: My Offers ---------- */
+
+#view-dash .item {
+  gap: 1.2rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+#view-dash .item .score {
+  min-width: 145px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: stretch;
+  padding: 0.7rem;
+  background: #f7f8f7;
+  border-radius: 10px;
+}
+
+#view-dash .item .score button {
+  width: 100%;
+  white-space: normal;
+}
+
+#view-dash .item .score button:not(.ghost) {
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+}
+
+#view-dash .item .score button:hover {
+  opacity: 0.88;
+}
+
+#view-dash .item .score button.ghost {
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+#view-dash .item h3 .tag {
+  margin-left: 0.35rem;
+}
+
+@media (max-width: 600px) {
+  #view-dash .item {
+    flex-direction: column;
+  }
+
+  #view-dash .item .score {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ---------- Client dashboard ---------- */
+
+#view-dash #postjob {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 1.4rem;
+  margin: 1rem 0 2rem;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#view-dash h2 {
+  color: var(--ink);
+  font-size: 1.25rem;
+  margin: 1.5rem 0 0.8rem;
+}
+
+#view-dash #postjob label {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  margin: 1rem 0 0.45rem;
+}
+
+#view-dash #postjob input,
+#view-dash #postjob select,
+#view-dash #postjob textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+}
+
+#view-dash #postjob input:focus,
+#view-dash #postjob select:focus,
+#view-dash #postjob textarea:focus {
+  outline: 2px solid var(--signal);
+  border-color: var(--signal-dk);
+}
+
+#view-dash #postjob textarea {
+  resize: vertical;
+  min-height: 95px;
+}
+
+#view-dash #postjob button[type="submit"],
+#view-dash #postjob > button:not([type]) {
+  margin-top: 1.2rem;
+  background: var(--signal);
+  color: var(--ink);
+  border: none;
+  border-radius: 9px;
+  padding: 0.8rem 1.5rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+#view-dash #postjob #jsuggest {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  #view-dash #postjob {
+    padding: 1rem;
+  }
+
+  #view-dash #postjob .row {
+    flex-direction: column;
+  }
+
+  #view-dash #postjob button {
+    width: 100%;
+  }
+}
+
+/* ---------- Client dashboard: My Jobs cards ---------- */
+
+#view-dash .item {
+  border-left: 5px solid var(--signal);
+  background: var(--panel);
+  border-radius: 13px;
+  padding: 1.2rem;
+  margin: 1rem 0;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#view-dash .item h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+}
+
+#view-dash .item .score {
+  min-width: 110px;
+  padding: 0.8rem;
+  background: #f7f8f7;
+  border-radius: 10px;
+  text-align: center;
+  color: var(--mute);
+  font-weight: 600;
+}
+
+#view-dash .item .score > b {
+  display: block;
+  color: var(--ink);
+  font-size: 1.7rem;
+}
+
+#view-dash .item .score button {
+  background: var(--ink);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#view-dash .item .score button:hover {
+  opacity: 0.88;
+}
+
+@media (max-width: 600px) {
+  #view-dash .item {
+    flex-direction: column;
+  }
+
+  #view-dash .item .score {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ---------- Client: View Offers and AI Recommendations ---------- */
+
+#view-dash .item .score {
+  min-width: 155px;
+  background: #f5f7f6;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.9rem;
+  text-align: center;
+}
+
+#view-dash .item .score > b {
+  display: block;
+  font-size: 1.7rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+#view-dash .item .score .bar {
+  height: 8px;
+  background: #dfe5e2;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0.6rem 0 1rem;
+}
+
+#view-dash .item .score .bar i {
+  display: block;
+  height: 100%;
+  background: var(--ok);
+  border-radius: 20px;
+}
+
+#view-dash .item .score button {
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.65rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+#view-dash .item .score button:not(.ghost) {
+  background: var(--signal);
+  color: var(--ink);
+  border: none;
+}
+
+#view-dash .item .score button.ghost {
+  background: white;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+#view-dash .item .score button:hover {
+  opacity: 0.85;
+}
+
+#view-dash h1 + p {
+  margin-top: 0.6rem;
+}
+
+#view-dash h2 {
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--line);
+}
+
+@media (max-width: 600px) {
+  #view-dash .item .score {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ---------- Administrator Dashboard ---------- */
+
+#view-dash .admin-intro {
+  color: var(--mute);
+  margin: 0.5rem 0 1.5rem;
+}
+
+#view-dash .admin-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 2rem;
+}
+
+#view-dash .admin-stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--signal);
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 3px 12px rgba(22, 37, 59, 0.05);
+}
+
+#view-dash .admin-stat span {
+  display: block;
+  color: var(--mute);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+#view-dash .admin-stat strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1.8rem;
+}
+
+#view-dash .admin-users-heading {
+  margin-top: 1.5rem;
+}
+
+#view-dash .admin-users .item {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--ink);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+#view-dash .admin-users .item h3 {
+  margin: 0 0 0.4rem;
+}
+
+#view-dash .admin-users .item p {
+  color: var(--mute);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+#view-dash .admin-users .score {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+@media (max-width: 850px) {
+  #view-dash .admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  #view-dash .admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  #view-dash .admin-stat {
+    padding: 0.9rem;
+  }
+
+  #view-dash .admin-stat strong {
+    font-size: 1.5rem;
+  }
+
+  #view-dash .admin-users .item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* ---------- Ujuzi Connect Logo Frame ---------- */
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  background: white;
+  border: 2px solid var(--signal);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(22, 37, 59, 0.12);
+}
+
+.brand-logo {
+  display: block;
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Footer logo */
+
+.foot-logo {
+  display: block;
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  background: white;
+  border: 2px solid var(--signal);
+  border-radius: 12px;
+  padding: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .foot-logo {
+    width: 58px;
+    height: 58px;
+  }
+}
+
+/* ---------- Updated Ujuzi Connect Logo ---------- */
+
+/* Rectangular header logo frame */
+header button.brand {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 190px !important;
+  height: 72px !important;
+  min-width: 190px;
+  padding: 5px 12px !important;
+  background: #ffffff !important;
+  border: 3px solid var(--signal) !important;
+  border-radius: 14px !important;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+header button.brand img.brand-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none !important;
+  object-fit: contain;
+}
+
+/* Larger footer logo */
+.foot-logo {
+  display: block;
+  width: 130px !important;
+  height: 100px !important;
+  max-width: none !important;
+  object-fit: contain;
+  padding: 8px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 3px solid var(--signal);
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+
+/* Smaller header frame on phones */
+@media (max-width: 600px) {
+  header button.brand {
+    width: 145px !important;
+    min-width: 145px;
+    height: 60px !important;
+  }
+
+  .foot-logo {
+    width: 110px !important;
+    height: 85px !important;
+  }
+}
+/* Ujuzi Connect - clean horizontal branding */
+
+header button.brand {
+  width: 210px !important;
+  height: 76px !important;
+  min-width: 210px;
+  padding: 5px 10px !important;
+  background: #fff !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 8px rgba(22,37,59,.08);
+}
+
+header button.brand img.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.foot-logo {
+  width: 160px !important;
+  height: 115px !important;
+  padding: 5px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  header button.brand {
+    width: 160px !important;
+    min-width: 160px;
+    height: 62px !important;
+  }
+}
+/* Public homepage hero */
+.landing-hero {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  padding: 55px 7%;
+  margin-bottom: 45px;
+border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(14, 31, 53, .94), rgba(14, 31, 53, .58)),
+    url("homepage-bg.jpg") center/cover no-repeat;
+  color: white;
+  overflow: hidden;
+}
+
+.landing-content {
+  max-width: 650px;
+}
+
+.landing-tag {
+  display: inline-block;
+  color: #f4b41a;
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.landing-content h1 {
+  color: white;
+  font-size: clamp(2.2rem, 5vw, 3.7rem);
+  line-height: 1.12;
+  margin: 0 0 20px;
+}
+
+.landing-content > p {
+  color: #f1f4f8;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  max-width: 570px;
+}
+
+.landing-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.landing-buttons button {
+  min-width: 145px;
+}
+
+.landing-buttons .ghost {
+  color: white;
+  border-color: white;
+}
+
+.landing-note {
+  margin-top: 25px;
+  font-size: .88rem !important;
+  opacity: .85;
+}
+
+@media (max-width: 600px) {
+  .landing-hero {
+    min-height: 390px;
+    padding: 35px 22px;
+    border-radius: 12px;
+  }
+
+  .landing-buttons {
+    flex-direction: column;
+  }
+
+  .landing-buttons button {
+    width: 100%;
+  }
+}
+/* Homepage services section */
+.home-services {
+  padding: 25px 0 50px;
+}
+
+.home-services > .band {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.home-services > .lead {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+.service-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
+}
+
+.service-card {
+  background: #fff;
+  border: 1px solid #e0e5e9;
+  border-radius: 15px;
+  padding: 13px;
+  transition: transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 9px 24px rgba(22, 37, 59, .12);
+}
+
+.service-card .service-go {
+  display: inline-block;
+  margin-top: 10px;
+  color: #16253b;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .service-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .service-photo {
+    height: 125px;
+  }
+}
+/* Homepage How It Works section */
+.how-home {
+  padding: 45px 0;
+  text-align: center;
+}
+
+.how-home > .band {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.how-home > .lead {
+  margin-bottom: 35px;
+}
+
+.how-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  text-align: left;
+}
+
+.how-card {
+  padding: 28px 24px;
+  border: 1px solid #e0e5e9;
+  border-radius: 16px;
+  background: white;
+}
+
+.how-number {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fff3ce;
+  color: #16253b;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+}
+
+.how-card h3 {
+  margin-bottom: 10px;
+}
+
+.how-card p {
+  color: #56657a;
+  line-height: 1.7;
+}
+
+.how-action {
+  margin-top: 30px;
+}
+
+@media (max-width: 700px) {
+  .how-cards {
+    grid-template-columns: 1fr;
+  }
+}
+/* Why choose Ujuzi Connect */
+.why-home {
+  padding: 50px 0;
+  margin: 25px 0;
+  text-align: center;
+  background: #f2f4f3;
+  border-radius: 18px;
+}
+
+.why-home > .band {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.why-home > .lead {
+  margin-bottom: 30px;
+}
+
+.why-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding: 0 22px;
+}
+
+.why-card {
+  background: white;
+  padding: 25px 18px;
+  border: 1px solid #e0e5e9;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.why-icon {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.why-card h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.why-card p {
+  color: #56657a;
+  font-size: .92rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 850px) {
+  .why-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 500px) {
+  .why-cards {
+    grid-template-columns: 1fr;
+  }
+}
+/* Fundi registration promotion */
+.cta {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  align-items: center;
+  gap: 30px;
+  padding: 38px;
+  margin: 45px 0;
+  background: #16253b;
+  color: white;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.cta h2 {
+  color: white;
+  font-size: 1.8rem;
+  margin-bottom: 14px;
+}
+
+.cta p {
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+.cta .dark {
+  background: #f4b41a;
+  color: #16253b;
+  border: 1px solid #f4b41a;
+}
+
+.cta .ghost.dark {
+  background: transparent;
+  color: white;
+  border-color: white;
+}
+
+.cta-photo {
+  min-height: 230px;
+  border-radius: 14px;
+  background:
+    linear-gradient(rgba(22,37,59,.1), rgba(22,37,59,.1)),
+    url("images/fundis.png") center/cover no-repeat;
+}
+
+@media (max-width: 700px) {
+  .cta {
+    grid-template-columns: 1fr;
+    padding: 25px;
+  }
+
+  .cta-photo {
+    min-height: 190px;
+  }
+}
+/* Fix fundi promotion button visibility */
+.cta .jump button.dark {
+  background: #f4b41a !important;
+  color: #16253b !important;
+  border: 2px solid #f4b41a !important;
+  font-weight: 700;
+}
+
+.cta .jump button.ghost.dark {
+  background: transparent !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+/* Final homepage call to action */
+.final-cta {
+  text-align: center;
+  padding: 55px 25px;
+  margin: 40px 0;
+  background: #fff3ce;
+  border-radius: 18px;
+}
+
+.final-cta h2 {
+  color: #16253b;
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.final-cta p {
+  max-width: 650px;
+  margin: 0 auto 25px;
+  color: #56657a;
+  line-height: 1.7;
+}
+
+.final-cta-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.final-cta-buttons .ghost {
+  background: white;
+  color: #16253b;
+  border: 2px solid #16253b;
+}
+
+@media (max-width: 600px) {
+  .final-cta-buttons {
+    flex-direction: column;
+  }
+
+  .final-cta-buttons button {
+    width: 100%;
+  }
+}
+/* Full-width homepage hero background only */
+#view-find .landing-hero {
+  position: relative;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: 0;
+  box-sizing: border-box;
+
+  background:
+    linear-gradient(rgba(15, 25, 40, 0.45), rgba(15, 25, 40, 0.45)),
+    url("homepage-bg.jpg") center center / cover no-repeat;
+}
+/* Remove top spacing on the public homepage */
+main:has(#view-find) {
+  padding-top: 0;
+}
+
+/* Extend only the hero background to both browser edges */
+#view-find .landing-hero {
+  box-shadow: 0 0 0 100vmax #16253b;
+  clip-path: inset(0 -100vmax);
+}
+/* Footer network services */
+#footnet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+#footnet .stat {
+  margin: 0 0 5px;
+}
+
+#footnet .subhead {
+  margin: 12px 0 4px;
+  font-weight: 600;
+}
+
+#footnet button {
+  display: block;
+  width: fit-content;
+  margin: 0;
+  text-align: left;
+}
+
+#footnet button[data-go="search"] {
+  margin-top: 8px;
+}
+
+#footnet {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#footnet .stat,
+#footnet .footer-services {
+  margin: 0;
+  line-height: 1.7;
+  font-size: 13px;
+  color: inherit;
+}
+
+.photo-edit-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.photo-camera {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: white;
+  display: grid;
+  place-items: center;
+  border: 2px solid white;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 5;
+  padding: 0;
+}
+.photo-controls .small.ghost {
+  font-size: 12px;
+  opacity: 0.65;
+  text-decoration: underline;
+  padding: 2px 0;
 }
